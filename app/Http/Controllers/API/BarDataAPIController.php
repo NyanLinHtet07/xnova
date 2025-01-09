@@ -13,6 +13,17 @@ class BarDataAPIController extends Controller
     {
         $barDatas = BarData::all();
 
+        $barDatas->transform( function($bar){
+            $decodedImages = collect(json_decode($bar->images));
+  
+            $bar->first_image = $decodedImages->isNotEmpty() ? url(str_replace('\\', '/', $decodedImages->first())) : null;
+          
+  
+            unset($bar->images);
+  
+            return $bar;
+          });
+
         return response()->json($barDatas, 200);
     }
 
@@ -37,7 +48,7 @@ class BarDataAPIController extends Controller
                 if($image->isValid()){
                     $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
                     $image->move(public_path('uploads/bars'), $filename);
-                    $imagePaths[] = 'uploads/property/' . $filename;
+                    $imagePaths[] = 'uploads/bars/' . $filename;
                 }
             }
         }
@@ -62,7 +73,8 @@ class BarDataAPIController extends Controller
      */
     public function show(string $id)
     {
-        $bar = BarData::findOrFail($id);
+        $bar = BarData::with('menus')
+                        ->findOrFail($id);
 
         $bar->images = collect(json_decode($bar->image))->map(function ($imagePath){
             return url(str_replace('\\' , '/', $imagePath));

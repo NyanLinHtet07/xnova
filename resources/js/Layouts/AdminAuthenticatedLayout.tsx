@@ -42,7 +42,19 @@ export default function Authenticated({
                                    
                                     <span>Home </span>
                                 </NavLink>
-                                <NavLink className='flex-row p-1 text-white hover:text-cyan-950' href={route('admin.bars')} active={route().current('admin.bars')}>
+                               
+                            </div>
+
+                            <div className="justify-start w-full px-2 py-2 mx-auto mb-1 ml-1 transition duration-500 hover:bg-slate-100 hover:text-cyan-950 rounded-xl">
+                            <NavLink className='flex-row p-1 text-white hover:text-cyan-950' href={route('admin.create-bar')} active={route().current('admin.create-bar')}>
+                                   
+                                   <span>Create Bar </span>
+                               </NavLink>
+                            </div>
+
+
+                            <div className="justify-start w-full px-2 py-2 mx-auto mb-1 ml-1 transition duration-500 hover:bg-slate-100 hover:text-cyan-950 rounded-xl">
+                            <NavLink className='flex-row p-1 text-white hover:text-cyan-950' href={route('admin.bars')} active={route().current('admin.bars')}>
                                    
                                    <span>Bars </span>
                                </NavLink>

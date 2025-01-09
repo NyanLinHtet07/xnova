@@ -13,7 +13,7 @@ class BarData extends Model
         'owner_id',
         'images',
         'opening_time',
-        'descrition',
+        'description',
         'location_lat',
         'location_long',
     ];
@@ -35,4 +35,3 @@ class BarData extends Model
         return $this->hasMany(BarMenu::class, 'bar_id', 'id');
     }
     }
-

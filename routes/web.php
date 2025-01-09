@@ -25,9 +25,17 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/AdminHomeScreen');
     })->name('admin.dashboard');
 
+    Route::get('/bar/create', function(){
+        return Inertia::render('Admin/Bars/BarCreateScreen');
+    })->name('admin.create-bar');
+
     Route::get('/bars', function(){
-        return Inertia::render('Admin/Bars');
+        return Inertia::render('Admin/Bars/BarListScreen');
     })->name('admin.bars');
+
+    Route::get('/bar/{id}', function($id){
+        return Inertia::render('Admin/Bars/BarDetailScreen', ['id' => $id]);
+    })->name('admin.bar.detail');
 });
 
 // Route::get('/dashboard', function () {
@@ -40,8 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('api')->group(function (){
-    Route::apiResource('bars', BarDataAPIController::class);
+Route::prefix('api')->middleware('api')->group(function (){
+    Route::resource('bars', BarDataAPIController::class);
     Route::apiResource('menus', BarMenuAPIController::class);
 });
 
