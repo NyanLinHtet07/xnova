@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
 Route::prefix('api')->middleware('api')->group(function (){
     Route::resource('bars', BarDataAPIController::class);
     Route::apiResource('menus', BarMenuAPIController::class);
+
+    //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
 });
 
 require __DIR__.'/auth.php';

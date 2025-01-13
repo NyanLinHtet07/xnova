@@ -14,6 +14,13 @@ class BarMenuAPIController extends Controller
         return response()->json($menus, 200);
     }
 
+    public function getMenuByBars($id){
+        $menus = BarMenu::where('bar_id', $id)
+                        ->get();
+
+        return response()->json($menus, 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

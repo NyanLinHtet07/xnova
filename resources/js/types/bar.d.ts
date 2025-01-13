@@ -10,5 +10,13 @@ export interface Bar {
     description: string,
     location_lat: string,
     location_long: string,
+    menus: menus[],
+
+}
+
+export interface Menus {
+    id: number,
+    title: string,
+    menus: string
 
 }

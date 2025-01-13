@@ -1,6 +1,6 @@
 import BarMenusComponent from '@/Components/Bars/BarMenusComponent';
 import AdminAuthenticatedLayout from '@/Layouts/AdminAuthenticatedLayout';
-import { Bar } from '@/types/bar';
+import { Bar, Menus } from '@/types/bar';
 import { Tab } from '@headlessui/react';
 import { Head, usePage } from '@inertiajs/react';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 
 export default function BarDetailScreen() {
     const [bar, setBar] = useState<Bar | null>(null);
+    const [menus, setMenus] = useState<Menus[]>([]);
     const {props} = usePage();
     const {id} = props;
 
@@ -18,6 +19,7 @@ export default function BarDetailScreen() {
         await axios.get(`/api/bars/${id}`)
                     .then(res => {
                         setBar(res.data);
+                        setMenus(res.data.menus);
                     })
     }
 
@@ -71,7 +73,7 @@ export default function BarDetailScreen() {
                             <Tab.Panel
                                
                                 className="p-3 bg-white shadow rounded-xl">
-                                    <BarMenusComponent id={Number(id)}/>
+                                    <BarMenusComponent id={Number(id)} menus ={menus} fetchBar={fetchBar}/>
                                 </Tab.Panel>
 
                                 <Tab.Panel
