@@ -38,6 +38,9 @@ class BarDataAPIController extends Controller
             'description' => 'nullable',
             'location_lat' => 'nullable',
             'location_long' => 'nullable',
+            'web' => 'nullable',
+            'address' => 'nullable',
+            'contact' => 'nullable'
         ]);
 
         $images = $request->file('images');
@@ -61,6 +64,9 @@ class BarDataAPIController extends Controller
             'description' => $request->description,
             'location_lat' => $request->location_lat,
             'location_long' => $request->location_long,
+            'web' => $request->web,
+            'address' => $request->address,
+            'contact' => $request->contact
         ]);
 
         return response()->json($bars, 200);
@@ -99,6 +105,9 @@ class BarDataAPIController extends Controller
             'description' => 'nullable',
             'location_lat' => 'nullable',
             'location_long' => 'nullable',
+            'web' => 'nullable',
+            'address' => 'nullable',
+            'contact' => 'nullable'
         ]);
 
         $imagePaths = $bar->images ? json_decode($bar->images, true) : [];
@@ -120,7 +129,10 @@ class BarDataAPIController extends Controller
             'opening_time' => $request->opening_time,
             'description' => $request->description,
             'location_lat' => $request->location_lat,
-            'location_long' => $request->location_long
+            'location_long' => $request->location_long,
+            'web' => $request->web,
+            'address' => $request->address,
+            'contact' => $request->contact
         ]);
 
         return response()->json($bar, 200);

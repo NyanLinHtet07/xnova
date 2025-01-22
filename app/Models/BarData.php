@@ -16,6 +16,9 @@ class BarData extends Model
         'description',
         'location_lat',
         'location_long',
+        'web',
+        'address',
+        'contact'
     ];
 
     protected $casts = [

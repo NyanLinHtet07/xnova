@@ -43,6 +43,9 @@ export default function BarDetailScreen() {
                         Name: {bar?.name}
                         Opening Hour: {bar?.opening_time}
                         Description: <div dangerouslySetInnerHTML={{ __html: bar?.description || "" }} className='text-sm '/> 
+                        Website: {bar?.web}
+                        Address: {bar?.address}
+                        Contact: {bar?.contact}
                     </div>
                 </div>
             </div>

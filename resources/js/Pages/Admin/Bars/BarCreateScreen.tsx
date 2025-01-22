@@ -19,6 +19,9 @@ export default function BarCreateScreen() {
     const [description, setDescription] = useState('');
     const [locationLat, setLocationLat] = useState('');
     const [locationLong, setLocationLong] = useState('');
+    const [web, setWeb] = useState('');
+    const [address, setAddress] = useState('');
+    const [contact, setContact] = useState('');
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if(acceptedFiles.length > 0){
@@ -47,7 +50,10 @@ export default function BarCreateScreen() {
         formData.append('opening_time', openingTime);
         formData.append('description', description);
         formData.append('location_lat', locationLat);
-        formData.append('location_long', locationLong)
+        formData.append('location_long', locationLong);
+        formData.append('web', web);
+        formData.append('address', address);
+        formData.append('contact', contact);
         images.forEach((image) => {
             formData.append('images[]', image);
         });
@@ -58,8 +64,8 @@ export default function BarCreateScreen() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
-            console.log('data is', res)
+            window.alert('Successfully Created')
+           
         }
         catch(err){
             console.error('Error uploading', err);
@@ -139,6 +145,32 @@ export default function BarCreateScreen() {
                             </div>
 
                             <div className="col-span-1 ">
+                            <InputLabel value="Contact" className="mb-2 text-lg"/>
+                                <TextInput 
+                                    type="text" 
+                                    id="contact"
+                                    name="contact"
+                                    value={contact}
+                                    className="block w-full mt-1 "
+                                    autoComplete="name"
+                                    onChange={(e) => setContact(e.target.value)} 
+                            />
+                            </div>
+
+                            <div className="col-span-1 ">
+                            <InputLabel value="address" className="mb-2 text-lg"/>
+                                <TextInput 
+                                    type="text" 
+                                    id="address"
+                                    name="address"
+                                    value={address}
+                                    className="block w-full mt-1 "
+                                    autoComplete="long"
+                                    onChange={(e) => setAddress(e.target.value)} 
+                            />
+                            </div>
+
+                            <div className="col-span-1 ">
                             <InputLabel value="Latitude" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -163,6 +195,20 @@ export default function BarCreateScreen() {
                                     onChange={(e) => setLocationLong(e.target.value)} 
                             />
                             </div>
+
+                            <div className="col-span-2 ">
+                            <InputLabel value="Website Link" className="mb-2 text-lg"/>
+                                <TextInput 
+                                    type="text" 
+                                    id="web"
+                                    name="web"
+                                    value={web}
+                                    className="block w-full mt-1 "
+                                    autoComplete="long"
+                                    onChange={(e) => setWeb(e.target.value)} 
+                            />
+                            </div>
+                            
 
                             <div className="col-span-2 h-96">
                             <InputLabel value="Description" className="mb-2 text-lg"/>

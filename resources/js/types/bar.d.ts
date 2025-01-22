@@ -11,6 +11,9 @@ export interface Bar {
     location_lat: string,
     location_long: string,
     menus: menus[],
+    web: string,
+    address:string,
+    contact: string
 
 }
 

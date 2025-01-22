@@ -7,18 +7,18 @@ use App\Http\Controllers\API\BarDataAPIController;
 use App\Http\Controllers\API\BarData\BarMenuAPIController;
 use Inertia\Inertia;
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-Route::get('/', function (){
-    return redirect('/login');
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
+
+// Route::get('/', function (){
+//     return redirect('/login');
+// });
 
 Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function(){
