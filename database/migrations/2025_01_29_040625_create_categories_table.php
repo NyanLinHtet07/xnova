@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bar_data', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('owner_id')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('cover')->nullable();
-            $table->json('images')->nullable();
-            $table->string('opening_time')->nullable();
+            $table->string('icon')->nullable();
             $table->longText('description')->nullable();
-            $table->string('location_lat')->nullable();
-            $table->string('location_long')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bar_data');
+        Schema::dropIfExists('categories');
     }
 };

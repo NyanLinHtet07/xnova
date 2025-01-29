@@ -1,7 +1,7 @@
 import BarMenusComponent from '@/Components/Bars/BarMenusComponent';
 import AdminAuthenticatedLayout from '@/Layouts/AdminAuthenticatedLayout';
 import { Bar, Menus } from '@/types/bar';
-import { Tab } from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { Head, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -39,6 +39,9 @@ export default function BarDetailScreen() {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <div>
+                        <img src={bar?.cover ? `/${bar.cover}` : 'Empty Cover'} alt={bar?.name} className='object-cover w-32 h-32 rounded-lg' />
+                    </div>
                     <div className="px-2 py-3 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         Name: {bar?.name}
                         Opening Hour: {bar?.opening_time}
@@ -51,8 +54,8 @@ export default function BarDetailScreen() {
             </div>
 
             <div className='w-full px-2 py-4 sm:px-0'>
-                <Tab.Group>
-                    <Tab.List className="flex p-1 space-x-1 rounded-lg bg-cyan-900/20">
+                <TabGroup>
+                    <TabList className="flex p-1 space-x-1 rounded-lg bg-cyan-900/20">
                         {tabs.map((tab) => (
                             <Tab
                                 key={tab}
@@ -65,28 +68,28 @@ export default function BarDetailScreen() {
                                 {tab}
                             </Tab>
                         ))}
-                    </Tab.List>
-                    <Tab.Panels className="mt-2">
-                    <Tab.Panel
+                    </TabList>
+                    <TabPanels className="mt-2">
+                    <TabPanel
                                
                                className="p-3 bg-white shadow rounded-xl">
                                    Hello Map
-                               </Tab.Panel>
+                               </TabPanel>
                        
-                            <Tab.Panel
+                            <TabPanel
                                
                                 className="p-3 bg-white shadow rounded-xl">
                                     <BarMenusComponent id={Number(id)} menus ={menus} fetchBar={fetchBar}/>
-                                </Tab.Panel>
+                                </TabPanel>
 
-                                <Tab.Panel
+                                <TabPanel
                                
                                className="p-3 bg-white shadow rounded-xl">
                                    Hello Desc
-                               </Tab.Panel>
+                               </TabPanel>
                       
-                    </Tab.Panels>
-                </Tab.Group>
+                    </TabPanels>
+                </TabGroup>
             </div>
         </AdminAuthenticatedLayout>
     );

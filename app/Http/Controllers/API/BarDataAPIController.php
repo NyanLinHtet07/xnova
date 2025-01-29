@@ -11,18 +11,23 @@ class BarDataAPIController extends Controller
 
     public function index()
     {
-        $barDatas = BarData::all();
+        // $barDatas = BarData::all();
 
-        $barDatas->transform( function($bar){
-            $decodedImages = collect(json_decode($bar->images));
+        // $barDatas->transform( function($bar){
+        //     $decodedImages = collect(json_decode($bar->images));
   
-            $bar->first_image = $decodedImages->isNotEmpty() ? url(str_replace('\\', '/', $decodedImages->first())) : null;
+        //     $bar->first_image = $decodedImages->isNotEmpty() ? url(str_replace('\\', '/', $decodedImages->first())) : null;
           
   
-            unset($bar->images);
+        //     unset($bar->images);
   
-            return $bar;
-          });
+        //     return $bar;
+        //   });
+
+        $barDatas = BarData::with('category')
+                        ->select('id', 'name', 'cover', 'opening_time', 'category_id')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
         return response()->json($barDatas, 200);
     }
@@ -32,6 +37,8 @@ class BarDataAPIController extends Controller
         $request->validate([
             'name' => 'required|string',
             'owner_id' => 'nullable',
+            'category_id' => 'nullable',
+            'cover' => 'nullable|mimes:png,jpg,jpeg',
             'images' => 'array|nullable',
             'images.*' => 'nullable|mimes:jpg,jpeg,png',
             'opening_time' => 'nullable',
@@ -46,19 +53,34 @@ class BarDataAPIController extends Controller
         $images = $request->file('images');
         $imagePaths = [];
 
+        $cover = $request->file('cover');
+        $coverPath = null;
+
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image){
                 if($image->isValid()){
-                    $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('uploads/bars'), $filename);
-                    $imagePaths[] = 'uploads/bars/' . $filename;
+                    // $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    // $image->move(public_path('uploads/bars'), $filename);
+                    // $imagePaths[] = 'uploads/bars/' . $filename;
+                    $path = $image->store('bars', 'public');
+                    $imagePaths[] = 'storage/' . $path;
                 }
             }
+        }
+
+        if($request->hasFile('cover')){
+            // $filename = uniqid() . '.' . $cover->getClientOriginalExtension();
+            // $cover->move(public_path('uploads/bars/cover'), $filename);
+            // $coverPath = 'uploads/bars/cover/' . $filename;
+            $coverPath = $request->file('cover')->store('bars/cover', 'public');
+            $coverPath = 'storage/' . $coverPath;
         }
 
         $bars = BarData::create([
             'name' => $request->name,
             'owner_id' => $request->owner_id,
+            'category_id' => $request->category_id,
+            'cover' => $coverPath,
             'images' => json_encode($imagePaths),
             'opening_time' => $request->opening_time,
             'description' => $request->description,
@@ -99,6 +121,8 @@ class BarDataAPIController extends Controller
         $request->validate([
             'name' => 'nullable|string',
             'owner_id' => 'nullable',
+            'category_id' => 'nullable',
+            'cover' => 'nullable',
             'images' => 'array|nullable',
             'images.*' => 'nullable|mimes:jpg,jpeg,png',
             'opening_time' => 'nullable',
@@ -111,6 +135,7 @@ class BarDataAPIController extends Controller
         ]);
 
         $imagePaths = $bar->images ? json_decode($bar->images, true) : [];
+
 
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image){
@@ -125,6 +150,7 @@ class BarDataAPIController extends Controller
         $bar->update([
             'name' => $request->name,
             'owner_id' => $request->owner_id,
+            'category_id' => $request->category_id,
             'images' => json_encode($imagePaths),
             'opening_time' => $request->opening_time,
             'description' => $request->description,

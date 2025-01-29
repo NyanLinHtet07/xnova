@@ -4,7 +4,8 @@ export interface Bar {
     id: number,
     name: string,
     owner_id: number,
-    owner: User
+    owner: User,
+    cover: string,
     first_image: string,
     opening_time: string,
     description: string,

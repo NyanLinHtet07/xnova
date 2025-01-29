@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminAuthenticatedLayout from '@/Layouts/AdminAuthenticatedLayout';
 import {Head} from '@inertiajs/react';
 import { useDropzone } from 'react-dropzone';
@@ -8,13 +8,18 @@ import { IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
+import { Transition } from "@headlessui/react";
+import { Category } from "@/types/category";
 
 export default function BarCreateScreen() {
     const [name, setName] = useState('');
     const [ownerId, setOwnerId] = useState('');
-    const [images, setImages] = useState<File[]>([]);
-    const [prev, setPrev] = useState<string[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    // const [images, setImages] = useState<File[]>([]);
+    // const [prev, setPrev] = useState<string[]>([]);
 
+    const [cover, setCover] = useState<File | null>(null);
+    const [coverPrev, setCoverPrev] = useState<string | null>(null);
     const [openingTime, setOpeningTime] = useState('');
     const [description, setDescription] = useState('');
     const [locationLat, setLocationLat] = useState('');
@@ -22,24 +27,55 @@ export default function BarCreateScreen() {
     const [web, setWeb] = useState('');
     const [address, setAddress] = useState('');
     const [contact, setContact] = useState('');
+    const [showSnackbar, setShowSnackBar] = useState(false);
+    const [snackBarMessage, setSnackBarMessage] = useState('');
+    const [snackBarType, setSnackBarType] = useState('');
+
+ 
+
+    // const onDrop = useCallback((acceptedFiles: File[]) => {
+    //     if(acceptedFiles.length > 0){
+    
+    //         setImages(acceptedFiles);
+
+    //         const previewUrls = acceptedFiles.map((file) => URL.createObjectURL(file))
+    //         setPrev(previewUrls);
+    //     }
+    // }, []);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
-        if(acceptedFiles.length > 0){
-    
-            setImages(acceptedFiles);
+            if(acceptedFiles.length > 0){
+                const file = acceptedFiles[0]
+                setCover(file);
+                setCoverPrev(URL.createObjectURL(file));
+            }
+        }, []);
 
-            const previewUrls = acceptedFiles.map((file) => URL.createObjectURL(file))
-            setPrev(previewUrls);
-        }
-    }, []);
-
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+     const {getRootProps, getInputProps, isDragActive} = useDropzone({
         onDrop,
-        multiple: true
+        multiple: false
     });
+    
+
+    // const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    //     onDrop,
+    //     //multiple: true
+    // });
 
     const handleDescription = (data: string) => {
         setDescription(data);
+    }
+
+    const fetchCategory = async() => {
+        try {
+            await axios.get('/api/categories')
+                        .then(res =>{
+                            setCategories(res.data);
+                        })
+                    }
+        catch (err){
+            console.log('err is', err)
+        }
     }
 
     const createData = async() => {
@@ -54,25 +90,50 @@ export default function BarCreateScreen() {
         formData.append('web', web);
         formData.append('address', address);
         formData.append('contact', contact);
-        images.forEach((image) => {
-            formData.append('images[]', image);
-        });
+        // images.forEach((image) => {
+        //     formData.append('images[]', image);
+        // });
+        if (cover) {
+            formData.append('cover', cover);
+        }
 
         try{
-            const res = await axios.post(`/api/bars`, formData, {
+             await axios.post(`/api/bars`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            window.alert('Successfully Created')
+           
+            setSnackBarMessage("Data Uploaded Successfully");
+            setSnackBarType('success');
+            setShowSnackBar(true);
+            setTimeout(() => setShowSnackBar(false), 3000 )
            
         }
         catch(err){
-            console.error('Error uploading', err);
+            //console.error('Error uploading', err);
+
+            setSnackBarMessage("Failed to uploaded");
+            setSnackBarType("error");
+            setShowSnackBar(true);
+            setTimeout(() => setShowSnackBar(false), 3000)
         }
+      
 
 
     }
+
+    useEffect(() => {
+        return() => {
+            if(coverPrev){
+                URL.revokeObjectURL(coverPrev);
+            }
+        }
+    })
+
+    useEffect(() => {
+        fetchCategory();
+    }, [])
 
 
     return (
@@ -145,7 +206,7 @@ export default function BarCreateScreen() {
                             </div>
 
                             <div className="col-span-1 ">
-                            <InputLabel value="Contact" className="mb-2 text-lg"/>
+                            <InputLabel value="Phone" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
                                     id="contact"
@@ -158,7 +219,7 @@ export default function BarCreateScreen() {
                             </div>
 
                             <div className="col-span-1 ">
-                            <InputLabel value="address" className="mb-2 text-lg"/>
+                            <InputLabel value="Address" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
                                     id="address"
@@ -220,8 +281,32 @@ export default function BarCreateScreen() {
                             />
                         </div>
                         </div>
-                        
+
+                        {/* <div>
+                        <input type="file" onChange={handleFileChange} />
+                        </div> */}
+
                         <div className='justify-start col-span-4 ' {...getRootProps()}>
+                        <div className='flex justify-start pl-3 mt-3'>
+                            <input {...getInputProps()} />
+                                {isDragActive ? (
+                                            <IconPlus size={150} className='p-6 rounded-lg bg-slate-200'/>
+                                            )  : (
+                                                <div className="p-6 rounded-lg bg-slate-200">
+                                                    <p>Click or Drag & Drop an image</p>
+                                                </div>
+                                            )}
+                
+                                            {coverPrev && (
+                                                <img src={coverPrev}  
+                                                alt="Selected Preview" 
+                                                className='rounded-lg ' 
+                                                style={{width:'150px', height:'150px',}} />
+                                                )} 
+                        </div>
+                        </div>
+                        
+                        {/* <div className='justify-start col-span-4 ' {...getRootProps()}>
                         <div className='flex justify-start pl-3 mt-3'>
                                                     <input {...getInputProps()} />
                                                         {isDragActive ? (
@@ -241,7 +326,7 @@ export default function BarCreateScreen() {
                                                             </div>
                                                         )} 
                                                     </div>
-                        </div>
+                        </div> */}
                        
                        
 
@@ -251,6 +336,22 @@ export default function BarCreateScreen() {
                           
 
                     </div>
+                    <Transition
+                        show={showSnackbar}
+                        enter="transition-opacity duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="transition-opacity duration-300"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div 
+                            className = {`fixed top-3 fit mx-2 px-4 py-2 rounded-lg shadow-lg text-white ${
+                                snackBarType === "success" ? "bg-green-500" : "bg-red-500"
+                            }`}>
+                            {snackBarMessage}
+                        </div>
+                    </Transition>
             </div>
         </AdminAuthenticatedLayout>
     )

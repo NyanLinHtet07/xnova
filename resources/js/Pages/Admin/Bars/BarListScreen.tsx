@@ -57,10 +57,13 @@ export default function BarListScreen() {
                         {barList && barList.map((bar) => (
                             <tr className="hover:bg-gray-50" key={bar.id}>
                                 <td className="px-4 py-2 border-b">
-                                    <img src={bar.first_image} alt="" className="object-cover w-24 h-24 rounded-lg" />
+                                <img src={bar.cover ? `/${bar.cover}` : "Empty Cover"} alt={bar.name} className="object-cover w-32 h-32 rounded-lg" />
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     {bar.name}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                    {bar.opening_time}
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     <Link href={route('admin.bar.detail', {id: bar.id})}

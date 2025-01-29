@@ -3,6 +3,7 @@
 namespace App\Models;
 use App\Models\User;
 use App\Models\BarMenu;
+use App\Models\Category;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,8 @@ class BarData extends Model
     protected $fillable = [
         'name',
         'owner_id',
+        'category_id',
+        'cover',
         'images',
         'opening_time',
         'description',
@@ -36,5 +39,11 @@ class BarData extends Model
     public function menus()
     {
         return $this->hasMany(BarMenu::class, 'bar_id', 'id');
+    }
+
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
     }
