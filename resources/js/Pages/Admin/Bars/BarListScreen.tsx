@@ -28,7 +28,7 @@ export default function BarListScreen() {
     fetchDatas();
    }, []);
 
-   const headers = ["Image", "Name", "Details"];
+   const headers = ["Image", "Name", "Category","Opening"];
 
     return (
         <AdminAuthenticatedLayout
@@ -57,10 +57,13 @@ export default function BarListScreen() {
                         {barList && barList.map((bar) => (
                             <tr className="hover:bg-gray-50" key={bar.id}>
                                 <td className="px-4 py-2 border-b">
-                                <img src={bar.cover ? `/${bar.cover}` : "Empty Cover"} alt={bar.name} className="object-cover w-32 h-32 rounded-lg" />
+                                <img src={bar.cover ? `/${bar.cover}` : "/nodata.jpg"} alt={bar.name} className="object-cover w-32 h-32 rounded-lg" />
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     {bar.name}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                    {bar.category ? bar.category.name : '-'}
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     {bar.opening_time}

@@ -8,18 +8,18 @@ import { IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import { Transition } from "@headlessui/react";
+import { Transition, Combobox } from "@headlessui/react";
 import { Category } from "@/types/category";
 
 export default function BarCreateScreen() {
     const [name, setName] = useState('');
     const [ownerId, setOwnerId] = useState('');
     const [categories, setCategories] = useState<Category[]>([]);
-    // const [images, setImages] = useState<File[]>([]);
-    // const [prev, setPrev] = useState<string[]>([]);
 
     const [cover, setCover] = useState<File | null>(null);
     const [coverPrev, setCoverPrev] = useState<string | null>(null);
+    const [categoryId, setCategoryId] = useState(null);
+    const [query, setQuery] = useState('');
     const [openingTime, setOpeningTime] = useState('');
     const [description, setDescription] = useState('');
     const [locationLat, setLocationLat] = useState('');
@@ -31,17 +31,13 @@ export default function BarCreateScreen() {
     const [snackBarMessage, setSnackBarMessage] = useState('');
     const [snackBarType, setSnackBarType] = useState('');
 
- 
 
-    // const onDrop = useCallback((acceptedFiles: File[]) => {
-    //     if(acceptedFiles.length > 0){
-    
-    //         setImages(acceptedFiles);
-
-    //         const previewUrls = acceptedFiles.map((file) => URL.createObjectURL(file))
-    //         setPrev(previewUrls);
-    //     }
-    // }, []);
+    const filterCategory = query === '' 
+                ? categories
+                : categories.filter(item => 
+                                            item.name.toLowerCase().includes(query.toLowerCase())
+                                        )
+    const selectedCategory = categories.find(cat => cat.id === categoryId) || null;
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
             if(acceptedFiles.length > 0){
@@ -56,11 +52,6 @@ export default function BarCreateScreen() {
         multiple: false
     });
     
-
-    // const {getRootProps, getInputProps, isDragActive} = useDropzone({
-    //     onDrop,
-    //     //multiple: true
-    // });
 
     const handleDescription = (data: string) => {
         setDescription(data);
@@ -83,6 +74,7 @@ export default function BarCreateScreen() {
 
         formData.append('name', name);
         formData.append('owner_id', ownerId);
+        formData.append('category_id', String(categoryId));
         formData.append('opening_time', openingTime);
         formData.append('description', description);
         formData.append('location_lat', locationLat);
@@ -147,7 +139,7 @@ export default function BarCreateScreen() {
         <div className="py-12">
         <div className='bg-white rounded-lg shadow-sm'>
                     <h4 className="pt-4 pb-5 pl-3 text-lg font-semibold text-cyan-900">Create</h4>
-                        <div className="grid grid-cols-2 gap-4 mx-8">
+                        <div className="grid grid-cols-4 gap-4 mx-8">
                             {/* <div className="col-span-1 ">
                             <InputLabel value="Owners" className="mb-2 text-lg"/>
                                  <Autocomplete
@@ -179,7 +171,7 @@ export default function BarCreateScreen() {
 
                          
 
-                            <div className="col-span-1 ">
+                            <div className="col-span-2 ">
                             <InputLabel value="Bar Name" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -190,6 +182,38 @@ export default function BarCreateScreen() {
                                     autoComplete="name"
                                     onChange={(e) => setName(e.target.value)} 
                             />
+                            </div>
+                            <div className="col-span-1">
+                            <InputLabel value="Category" className="mb-2 text-lg"/>
+                            <Combobox value={categoryId} onChange={setCategoryId}>
+                                <div className="relative mt-1">
+                                <Combobox.Input
+                                    className="w-full px-4 py-2 border rounded"
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    displayValue={() => selectedCategory ? selectedCategory.name : ''}
+                                    placeholder="Search Category ..."
+                                />
+                                <Combobox.Options className="absolute w-full mt-1 overflow-auto bg-white border rounded shadow-lg max-h-60">
+                                    {filterCategory.length === 0 && query !== '' ? (
+                                    <div className="px-4 py-2 text-gray-500">No results found</div>
+                                    ) : (
+                                    filterCategory.map((item) => (
+                                        <Combobox.Option key={item.id} value={item.id}>
+                                        {({ active, selected }) => (
+                                            <div
+                                            className={`px-4 py-2 cursor-pointer ${
+                                                active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                            } ${selected ? 'font-bold' : ''}`}
+                                            >
+                                            {item.name}
+                                            </div>
+                                        )}
+                                        </Combobox.Option>
+                                    ))
+                                    )}
+                                </Combobox.Options>
+                                </div>
+                            </Combobox>
                             </div>
 
                             <div className="col-span-1 ">
@@ -205,7 +229,7 @@ export default function BarCreateScreen() {
                             />
                             </div>
 
-                            <div className="col-span-1 ">
+                            <div className="col-span-2 ">
                             <InputLabel value="Phone" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -218,7 +242,7 @@ export default function BarCreateScreen() {
                             />
                             </div>
 
-                            <div className="col-span-1 ">
+                            <div className="col-span-2">
                             <InputLabel value="Address" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -231,7 +255,7 @@ export default function BarCreateScreen() {
                             />
                             </div>
 
-                            <div className="col-span-1 ">
+                            <div className="col-span-2 ">
                             <InputLabel value="Latitude" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -244,7 +268,7 @@ export default function BarCreateScreen() {
                             />
                             </div>
 
-                            <div className="col-span-1 ">
+                            <div className="col-span-2 ">
                             <InputLabel value="Longtitude" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -257,7 +281,7 @@ export default function BarCreateScreen() {
                             />
                             </div>
 
-                            <div className="col-span-2 ">
+                            <div className="col-span-4 ">
                             <InputLabel value="Website Link" className="mb-2 text-lg"/>
                                 <TextInput 
                                     type="text" 
@@ -271,7 +295,7 @@ export default function BarCreateScreen() {
                             </div>
                             
 
-                            <div className="col-span-2 h-96">
+                            <div className="col-span-4 h-96">
                             <InputLabel value="Description" className="mb-2 text-lg"/>
                             <ReactQuill
                                 value={description}
@@ -292,8 +316,8 @@ export default function BarCreateScreen() {
                                 {isDragActive ? (
                                             <IconPlus size={150} className='p-6 rounded-lg bg-slate-200'/>
                                             )  : (
-                                                <div className="p-6 rounded-lg bg-slate-200">
-                                                    <p>Click or Drag & Drop an image</p>
+                                                <div className="p-6 ml-10 rounded-lg bg-slate-200">
+                                                    <p>Click or Drag & Drop an Cover</p>
                                                 </div>
                                             )}
                 

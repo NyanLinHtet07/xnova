@@ -1,4 +1,5 @@
 import { User } from ".";
+import { Category } from "./category";
 
 export interface Bar {
     id: number,
@@ -14,7 +15,9 @@ export interface Bar {
     menus: menus[],
     web: string,
     address:string,
-    contact: string
+    contact: string,
+    category_id:number,
+    category: Category;
 
 }
 

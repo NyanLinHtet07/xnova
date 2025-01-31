@@ -132,7 +132,7 @@ const CategoryListTab:React.FC<CategoryListProps> = ({
                  </table>
 
                  <Transition appear show={isOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-50 w-full" onClose={() => setIsOpen(false)}>
+                <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -155,9 +155,9 @@ const CategoryListTab:React.FC<CategoryListProps> = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                            <Dialog.Panel className="w-7/12 p-6 bg-white rounded-lg shadow-xl ">
                                 <Dialog.Title className="text-lg font-semibold">
-                                    My Modal Title
+                                    Edit Category
                                 </Dialog.Title>
                                 <div className="grid grid-cols-2 gap-4 mx-8">
                 <div className="col-span-2 ">
