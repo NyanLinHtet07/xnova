@@ -3,7 +3,7 @@ import AdminAuthenticatedLayout from '@/Layouts/AdminAuthenticatedLayout';
 import { Bar, Menus } from '@/types/bar';
 import ReactQuill from "react-quill";
 import { useDropzone } from "react-dropzone";
-import { Combobox, Dialog, Tab, TabGroup, TabList, TabPanel, TabPanels, Transition } from '@headlessui/react';
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, DialogPanel, DialogTitle, Tab, TabGroup, TabList, TabPanel, TabPanels, Transition, TransitionChild } from '@headlessui/react';
 import { Head, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Fragment, useCallback, useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import { IconEdit, IconPlus } from '@tabler/icons-react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import { Category } from '@/types/category';
+import BarImagesComponent from '@/Components/Bars/BarImagesComponent';
 
 import 'react-quill/dist/quill.snow.css';
 
@@ -118,19 +119,19 @@ export default function BarDetailScreen() {
             formData.append('cover', cover);
         }
 
+        formData.append('_method', 'PUT');
+
         try{
              await axios.post(`/api/bars/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-           
-           
+           setIsOpen(false);
+           fetchBar();
            
         }
         catch(err){
-            //console.error('Error uploading', err);
-
             
         }
       
@@ -138,18 +139,6 @@ export default function BarDetailScreen() {
 
     }
 
-    // const onDrop = useCallback((acceptedFiles: File[]) => {
-    //             if(acceptedFiles.length > 0){
-    //                 const file = acceptedFiles[0]
-    //                 setIcon(file);
-    //                 setIconPrev(URL.createObjectURL(file));
-    //             }
-    //         }, []);
-        
-    //         const {getRootProps, getInputProps, isDragActive} = useDropzone({
-    //             onDrop,
-    //             multiple: false
-    //         })
 
     useEffect(() => {
         fetchBar();
@@ -241,14 +230,10 @@ export default function BarDetailScreen() {
                         ))}
                     </TabList>
                     <TabPanels className="mt-2">
-                    <TabPanel
-                               
-                               className="p-3 bg-white shadow rounded-xl">
-                                   <h2 className='mb-4 text-lg font-bold'>Cover Photo</h2>
-                                   <div>
-                                        <img src={bar?.cover ? `/${bar.cover}` : '/nodata.jpg'} alt={bar?.name} className='object-cover rounded-lg w-60 h-60' />
-                                    </div>
-                               </TabPanel>
+                            <TabPanel
+                                className="p-3 bg-white shadow rounded-xl">
+                                <BarImagesComponent cover={bar?.cover} barID={bar?.id} />
+                            </TabPanel>
                        
                             <TabPanel
                                
@@ -268,7 +253,7 @@ export default function BarDetailScreen() {
 
                 <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
-                    <Transition.Child
+                    <TransitionChild
                         as={Fragment}
                         enter="ease-out duration-300"
                         enterFrom="opacity-0 scale-95"
@@ -278,10 +263,11 @@ export default function BarDetailScreen() {
                         leaveTo="opacity-0 scale-95"
                     >
                         <div className="fixed inset-0 bg-black bg-opacity-30" />
-                    </Transition.Child>
+                    </TransitionChild>
 
-                    <div className="fixed inset-0 flex items-center justify-center p-4">
-                        <Transition.Child
+                    <div className="fixed inset-0 w-screen p-4 overflow-y-auto">
+                    <div className="flex items-center justify-center min-h-full">
+                        <TransitionChild
                             as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0 scale-95"
@@ -290,174 +276,175 @@ export default function BarDetailScreen() {
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-7/12 p-6 bg-white rounded-lg shadow-xl ">
-                                <Dialog.Title className="text-lg font-semibold">
+                            <DialogPanel className="w-7/12 p-6 bg-white rounded-lg shadow-xl ">
+                                <DialogTitle className="text-lg font-semibold">
                                     Edit Bar
-                                </Dialog.Title>
+                                </DialogTitle>
                                 <div className="grid grid-cols-2 gap-4 mx-8">
-                <div className="col-span-2 ">
-                            <InputLabel value="Bar Name" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="name"
-                                    name="name"
-                                    value={name}
-                                    className="block w-full mt-1 "
-                                    autoComplete="name"
-                                    onChange={(e) => setName(e.target.value)} 
-                            />
-                            </div>
-                            <div className="col-span-1">
-                            <InputLabel value="Category" className="mb-2 text-lg"/>
-                            <Combobox value={categoryId} onChange={setCategoryId}>
-                                <div className="relative mt-1">
-                                <Combobox.Input
-                                    className="w-full px-4 py-2 border rounded"
-                                    onChange={(e) => setQuery(e.target.value)}
-                                    displayValue={() => selectedCategory ? selectedCategory.name : ''}
-                                    placeholder="Search Category ..."
-                                />
-                                <Combobox.Options className="absolute w-full mt-1 overflow-auto bg-white border rounded shadow-lg max-h-60">
-                                    {filterCategory.length === 0 && query !== '' ? (
-                                    <div className="px-4 py-2 text-gray-500">No results found</div>
-                                    ) : (
-                                    filterCategory.map((item) => (
-                                        <Combobox.Option key={item.id} value={item.id}>
-                                        {({ active, selected }) => (
-                                            <div
-                                            className={`px-4 py-2 cursor-pointer ${
-                                                active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                            } ${selected ? 'font-bold' : ''}`}
-                                            >
-                                            {item.name}
-                                            </div>
-                                        )}
-                                        </Combobox.Option>
-                                    ))
-                                    )}
-                                </Combobox.Options>
+                        <div className="col-span-2 ">
+                                    <InputLabel value="Bar Name" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="name"
+                                            name="name"
+                                            value={name}
+                                            className="block w-full mt-1 "
+                                            autoComplete="name"
+                                            onChange={(e) => setName(e.target.value)} 
+                                    />
+                                    </div>
+                                    <div className="col-span-1">
+                                    <InputLabel value="Category" className="mb-2 text-lg"/>
+                                    <Combobox value={categoryId} onChange={setCategoryId}>
+                                        <div className="relative mt-1">
+                                        <ComboboxInput
+                                            className="w-full px-4 py-2 border rounded"
+                                            onChange={(e) => setQuery(e.target.value)}
+                                            displayValue={() => selectedCategory ? selectedCategory.name : ''}
+                                            placeholder="Search Category ..."
+                                        />
+                                        <ComboboxOptions className="absolute w-full mt-1 overflow-auto bg-white border rounded shadow-lg max-h-60">
+                                            {filterCategory.length === 0 && query !== '' ? (
+                                            <div className="px-4 py-2 text-gray-500">No results found</div>
+                                            ) : (
+                                            filterCategory.map((item) => (
+                                                <ComboboxOption key={item.id} value={item.id}>
+                                                {({ active, selected }) => (
+                                                    <div
+                                                    className={`px-4 py-2 cursor-pointer ${
+                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                    } ${selected ? 'font-bold' : ''}`}
+                                                    >
+                                                    {item.name}
+                                                    </div>
+                                                )}
+                                                </ComboboxOption>
+                                            ))
+                                            )}
+                                        </ComboboxOptions>
+                                        </div>
+                                    </Combobox>
+                                    </div>
+
+                                    <div className="col-span-1 ">
+                                    <InputLabel value="Opening Hour" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="time"
+                                            name="time"
+                                            value={openingTime}
+                                            className="block w-full mt-1 "
+                                            autoComplete="time"
+                                            onChange={(e) => setOpeningTime(e.target.value)} 
+                                    />
+                                    </div>
+
+                                    <div className="col-span-2 ">
+                                    <InputLabel value="Phone" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="contact"
+                                            name="contact"
+                                            value={contact}
+                                            className="block w-full mt-1 "
+                                            autoComplete="name"
+                                            onChange={(e) => setContact(e.target.value)} 
+                                    />
+                                    </div>
+
+                                    <div className="col-span-2">
+                                    <InputLabel value="Address" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="address"
+                                            name="address"
+                                            value={address}
+                                            className="block w-full mt-1 "
+                                            autoComplete="long"
+                                            onChange={(e) => setAddress(e.target.value)} 
+                                    />
+                                    </div>
+
+                                    <div className="col-span-2 ">
+                                    <InputLabel value="Latitude" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="lat"
+                                            name="lat"
+                                            value={locationLat}
+                                            className="block w-full mt-1 "
+                                            autoComplete="name"
+                                            onChange={(e) => setLocationLat(e.target.value)} 
+                                    />
+                                    </div>
+
+                                    <div className="col-span-2 ">
+                                    <InputLabel value="Longtitude" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="long"
+                                            name="long"
+                                            value={locationLong}
+                                            className="block w-full mt-1 "
+                                            autoComplete="long"
+                                            onChange={(e) => setLocationLong(e.target.value)} 
+                                    />
+                                    </div>
+
+                                    <div className="col-span-4 ">
+                                    <InputLabel value="Website Link" className="mb-2 text-lg"/>
+                                        <TextInput 
+                                            type="text" 
+                                            id="web"
+                                            name="web"
+                                            value={web}
+                                            className="block w-full mt-1 "
+                                            autoComplete="long"
+                                            onChange={(e) => setWeb(e.target.value)} 
+                                    />
+                                    </div>
+                                    
+
+                                    <div className="col-span-4 h-96">
+                                    <InputLabel value="Description" className="mb-2 text-lg"/>
+                                    <ReactQuill
+                                        value={description}
+                                        onChange={handleDescription}
+                                        
+                                        className="w-full rounded-lg h-72"
+                                    />
                                 </div>
-                            </Combobox>
-                            </div>
+                                </div>
 
-                            <div className="col-span-1 ">
-                            <InputLabel value="Opening Hour" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="time"
-                                    name="time"
-                                    value={openingTime}
-                                    className="block w-full mt-1 "
-                                    autoComplete="time"
-                                    onChange={(e) => setOpeningTime(e.target.value)} 
-                            />
-                            </div>
-
-                            <div className="col-span-2 ">
-                            <InputLabel value="Phone" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="contact"
-                                    name="contact"
-                                    value={contact}
-                                    className="block w-full mt-1 "
-                                    autoComplete="name"
-                                    onChange={(e) => setContact(e.target.value)} 
-                            />
-                            </div>
-
-                            <div className="col-span-2">
-                            <InputLabel value="Address" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="address"
-                                    name="address"
-                                    value={address}
-                                    className="block w-full mt-1 "
-                                    autoComplete="long"
-                                    onChange={(e) => setAddress(e.target.value)} 
-                            />
-                            </div>
-
-                            <div className="col-span-2 ">
-                            <InputLabel value="Latitude" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="lat"
-                                    name="lat"
-                                    value={locationLat}
-                                    className="block w-full mt-1 "
-                                    autoComplete="name"
-                                    onChange={(e) => setLocationLat(e.target.value)} 
-                            />
-                            </div>
-
-                            <div className="col-span-2 ">
-                            <InputLabel value="Longtitude" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="long"
-                                    name="long"
-                                    value={locationLong}
-                                    className="block w-full mt-1 "
-                                    autoComplete="long"
-                                    onChange={(e) => setLocationLong(e.target.value)} 
-                            />
-                            </div>
-
-                            <div className="col-span-4 ">
-                            <InputLabel value="Website Link" className="mb-2 text-lg"/>
-                                <TextInput 
-                                    type="text" 
-                                    id="web"
-                                    name="web"
-                                    value={web}
-                                    className="block w-full mt-1 "
-                                    autoComplete="long"
-                                    onChange={(e) => setWeb(e.target.value)} 
-                            />
-                            </div>
                             
 
-                            <div className="col-span-4 h-96">
-                            <InputLabel value="Description" className="mb-2 text-lg"/>
-                            <ReactQuill
-                                value={description}
-                                onChange={handleDescription}
-                                
-                                className="w-full rounded-lg h-72"
-                            />
-                        </div>
-                        </div>
-
-                       
-
-                        <div className='justify-start col-span-4 ' {...getRootProps()}>
-                        <div className='flex justify-start pl-3 mt-3'>
-                            <input {...getInputProps()} />
-                                {isDragActive ? (
-                                            <IconPlus size={150} className='p-6 rounded-lg bg-slate-200'/>
-                                            )  : (
-                                                <div className="p-6 ml-10 rounded-lg bg-slate-200">
-                                                    <p>Click or Drag & Drop an Cover</p>
-                                                </div>
-                                            )}
-                
-                                            {coverPrev && (
-                                                <img src={coverPrev}  
-                                                alt="Selected Preview" 
-                                                className='rounded-lg ' 
-                                                style={{width:'150px', height:'150px',}} />
-                                                )} 
-                        </div>
-                        </div>
+                                <div className='justify-start col-span-4 ' {...getRootProps()}>
+                                <div className='flex justify-start pl-3 mt-3'>
+                                    <input {...getInputProps()} />
+                                        {isDragActive ? (
+                                                    <IconPlus size={150} className='p-6 rounded-lg bg-slate-200'/>
+                                                    )  : (
+                                                        <div className="p-6 ml-10 rounded-lg bg-slate-200">
+                                                            <p>Click or Drag & Drop an Cover</p>
+                                                        </div>
+                                                    )}
                         
-                <div className="flex justify-end col-span-2 pb-5 mr-10">
+                                                    {coverPrev && (
+                                                        <img src={coverPrev}  
+                                                        alt="Selected Preview" 
+                                                        className='rounded-lg ' 
+                                                        style={{width:'150px', height:'150px',}} />
+                                                        )} 
+                                </div>
+                                </div>
+                                
+                        <div className="flex justify-end col-span-2 pb-5 mr-10">
                             <button className="px-3 py-2 text-sm text-white rounded-lg bg-cyan-800" onClick={() => updateData() }>Update Category</button>
                         </div>
                         
-                            </Dialog.Panel>
-                        </Transition.Child>
+                            </DialogPanel>
+                        </TransitionChild>
+                        </div>
                     </div>
                 </Dialog>
             </Transition>

@@ -3,9 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\BarDataAPIController;
+use App\Http\Controllers\API\BarData\BarDataAPIController;
 use App\Http\Controllers\API\BarData\BarMenuAPIController;
+use App\Http\Controllers\API\BarData\BarImageGalleryAPIController;
 use App\Http\Controllers\API\Categroy\CategroyAPIController;
+
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -17,9 +19,7 @@ Route::get('/', function () {
     ]);
 });
 
-// Route::get('/', function (){
-//     return redirect('/login');
-// });
+
 
 Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function(){
@@ -54,9 +54,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('api')->middleware('api')->group(function (){
-    Route::resource('bars', BarDataAPIController::class);
+    Route::apiResource('bars', BarDataAPIController::class);
     Route::apiResource('menus', BarMenuAPIController::class);
     Route::apiResource('categories', CategroyAPIController::class);
+    Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
+
+    Route::get('bar/gallery/by-bar/{barID}', [BarImageGalleryAPIController::class, 'getDataByBar']);
     //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
 });
 

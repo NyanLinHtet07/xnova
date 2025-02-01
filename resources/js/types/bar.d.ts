@@ -7,7 +7,7 @@ export interface Bar {
     owner_id: number,
     owner: User,
     cover: string,
-    first_image: string,
+    images: barImages[],
     opening_time: string,
     description: string,
     location_lat: string,
@@ -26,4 +26,10 @@ export interface Menus {
     title: string,
     menus: string
 
+}
+
+export interface barImages {
+    id: number,
+    bar_id: numbar,
+    image: string
 }

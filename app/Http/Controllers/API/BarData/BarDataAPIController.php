@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\BarData;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,20 +11,7 @@ class BarDataAPIController extends Controller
 
     public function index()
     {
-        // $barDatas = BarData::all();
-
-        // $barDatas->transform( function($bar){
-        //     $decodedImages = collect(json_decode($bar->images));
-  
-        //     $bar->first_image = $decodedImages->isNotEmpty() ? url(str_replace('\\', '/', $decodedImages->first())) : null;
-          
-  
-        //     unset($bar->images);
-  
-        //     return $bar;
-        //   });
-
-        $barDatas = BarData::with('category')
+        $barDatas = BarData::with('category', 'images')
                         ->select('id', 'name', 'cover', 'opening_time', 'category_id')
                         ->orderBy('created_at', 'desc')
                         ->get();
@@ -101,7 +88,7 @@ class BarDataAPIController extends Controller
      */
     public function show(string $id)
     {
-        $bar = BarData::with('menus', 'category')
+        $bar = BarData::with('menus', 'category', 'images')
                         ->findOrFail($id);
 
         $bar->images = collect(json_decode($bar->image))->map(function ($imagePath){
@@ -135,22 +122,32 @@ class BarDataAPIController extends Controller
         ]);
 
         $imagePaths = $bar->images ? json_decode($bar->images, true) : [];
-
+        $cover = $bar->cover;
 
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image){
                 if($image->isValid()){
-                    $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('uploads/bars'), $filename);
-                    $imagePaths[] = 'uploads/property/' . $filename;
+                    // $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    // $image->move(public_path('uploads/bars'), $filename);
+                    // $imagePaths[] = 'uploads/bars/' . $filename;
+                    $path = $image->store('bars', 'public');
+                    $imagePaths[] = 'storage/' . $path;
                 }
             }
         }
+
+        if($request->hasFile('cover')){
+            $cover = $request->file('cover')->store('bars/cover', 'public');
+            $cover = 'storage/' . $cover;
+        }
+
+
 
         $bar->update([
             'name' => $request->name,
             'owner_id' => $request->owner_id,
             'category_id' => $request->category_id,
+            'cover' => $cover,
             'images' => json_encode($imagePaths),
             'opening_time' => $request->opening_time,
             'description' => $request->description,
