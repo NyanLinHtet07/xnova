@@ -34,6 +34,10 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/Bars/BarCreateScreen');
     })->name('admin.create-bar');
 
+    Route::get('/bar/import', function(){
+        return Inertia::render('Admin/Bars/BarImportScreen');
+    })->name('admin.import-bar');
+
     Route::get('/bars', function(){
         return Inertia::render('Admin/Bars/BarListScreen');
     })->name('admin.bars');
@@ -60,6 +64,7 @@ Route::prefix('api')->middleware('api')->group(function (){
     Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
 
     Route::get('bar/gallery/by-bar/{barID}', [BarImageGalleryAPIController::class, 'getDataByBar']);
+    Route::post('import/barData', [BarDataAPIController::class, 'importDataBtExcel']);
     //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
 });
 

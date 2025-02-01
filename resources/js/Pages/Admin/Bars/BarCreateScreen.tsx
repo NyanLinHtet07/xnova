@@ -136,7 +136,7 @@ export default function BarCreateScreen() {
             </h2>
         }  >
         <Head title="Menu"/>
-        <div className="py-12">
+        <div className="py-12 mx-4">
         <div className='bg-white rounded-lg shadow-sm'>
                     <h4 className="pt-4 pb-5 pl-3 text-lg font-semibold text-cyan-900">Create</h4>
                         <div className="grid grid-cols-4 gap-4 mx-8">

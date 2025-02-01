@@ -5,18 +5,44 @@ namespace App\Http\Controllers\API\BarData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BarData;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BarDataImport;
+use Illuminate\Support\Facades\Storage;
 
 class BarDataAPIController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $barDatas = BarData::with('category', 'images')
+        $query = BarData::query();
+
+        if($search = $request->input('search')){
+            $query->where('name', 'LIKE', "%{$search}%")
+
+            ->orWhereHas('category', function($q) use ($search){
+                $q->where('name', 'LIKE', "%{$search}%");
+            });
+        }
+        $barDatas = $query->with('category')
                         ->select('id', 'name', 'cover', 'opening_time', 'category_id')
                         ->orderBy('created_at', 'desc')
-                        ->get();
+                        ->paginate(20);
 
         return response()->json($barDatas, 200);
+    }
+
+    public function importDataBtExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        $file = $request->file('file');
+
+        Excel::import(new BarDataImport, $file);
+        
+        return response()->json(['message' => 'File imported successfully!'], 200);
+
     }
 
     public function store(Request $request)

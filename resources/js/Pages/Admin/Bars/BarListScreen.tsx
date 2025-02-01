@@ -8,15 +8,24 @@ import { IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { Bar } from "@/types/bar";
 import NavLink from "@/Components/NavLink";
+import PaginateComponent from "@/Components/PaginateComponent";
 
 export default function BarListScreen() {
    const [barList, setBarList] = useState<Bar[]>([]);
+   const [loading, setLoading] = useState(false);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPage, setTotalPage] = useState(0);
+   const [searchText, setSearchText] = useState("");
 
-   const fetchDatas = async() => {
+
+   const fetchDatas = async(page: number, search ="") => {
         try {
-            await axios.get('/api/bars')
+            await axios.get('/api/bars', {
+                params: {page, search}
+            })
                         .then(res =>{
-                            setBarList(res.data);
+                            setBarList(res.data.data);
+                            setTotalPage(res.data.last_page);
                         })
         }
         catch(err){
@@ -24,9 +33,21 @@ export default function BarListScreen() {
         }
    }
 
+   const handlePageChange = (page:number) => {
+        setCurrentPage(page);
+        fetchDatas(page, searchText)
+    }
+
+   const handleSearch = (e: any) => {
+    const value = e.target.value;
+    setSearchText(value);
+    fetchDatas(currentPage, value);
+    setCurrentPage(1);
+   }
+
    useEffect(() => {
-    fetchDatas();
-   }, []);
+    fetchDatas(currentPage, searchText);
+   }, [currentPage]);
 
    const headers = ["Image", "Name", "Category","Opening"];
 
@@ -38,7 +59,18 @@ export default function BarListScreen() {
             </h2>
         }  >
         <Head title="Bars"/>
-        <div className="py-12">
+        <div className="py-12 mx-auto max-w-7xl">
+
+            
+            <div className="mb-4">
+                <input
+                type="text"
+                value={searchText}
+                onChange={handleSearch}
+                placeholder="Search ...."
+                className="w-full px-4 py-2 border rounded-lg"/>
+            </div>
+
         <div className='bg-white rounded-lg shadow-sm'>
                  <table className="min-w-full border border-collapse border-gray-200">
                     <thead>
@@ -79,6 +111,12 @@ export default function BarListScreen() {
                         ))}
                     </tbody>
                  </table>
+
+                 <PaginateComponent 
+                                currentPage={currentPage}
+                                totalPages={totalPage}
+                                onPageChange={handlePageChange}
+                            />
                        
             </div>
         </div>
