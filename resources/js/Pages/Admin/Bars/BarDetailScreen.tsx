@@ -4,7 +4,7 @@ import { Bar, Menus } from '@/types/bar';
 import ReactQuill from "react-quill";
 import { useDropzone } from "react-dropzone";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, DialogPanel, DialogTitle, Tab, TabGroup, TabList, TabPanel, TabPanels, Transition, TransitionChild } from '@headlessui/react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { IconEdit, IconPlus } from '@tabler/icons-react';
@@ -14,6 +14,7 @@ import { Category } from '@/types/category';
 import BarImagesComponent from '@/Components/Bars/BarImagesComponent';
 
 import 'react-quill/dist/quill.snow.css';
+import NavLink from '@/Components/NavLink';
 
 export default function BarDetailScreen() {
     const [bar, setBar] = useState<Bar | null>(null);
@@ -39,7 +40,7 @@ export default function BarDetailScreen() {
     const [contact, setContact] = useState('');
 
 
-    const tabs = ["Images", "Menus", "Customers"];
+    const tabs = ["General", "Images", "Promo","Customers"];
 
     const handleDescription = (data: string) => {
         setDescription(data);
@@ -134,9 +135,6 @@ export default function BarDetailScreen() {
         catch(err){
             
         }
-      
-
-
     }
 
 
@@ -231,15 +229,25 @@ export default function BarDetailScreen() {
                     </TabList>
                     <TabPanels className="mt-2">
                             <TabPanel
+                                    className="p-3 bg-white shadow rounded-xl">
+                                    <Link className='px-4 py-3 my-10 text-white rounded-lg h-52 w-80 bg-cyan-900 hover:text-cyan-950' 
+                                            href={route('admin.bar.promo', {id: id})}>
+                                                                       
+                                                        <span> Go to Promotion Page </span>
+                                    </Link>
+                            </TabPanel>
+                            <TabPanel
                                 className="p-3 bg-white shadow rounded-xl">
                                 <BarImagesComponent cover={bar?.cover} barID={bar?.id} />
                             </TabPanel>
                        
                             <TabPanel
-                               
-                                className="p-3 bg-white shadow rounded-xl">
+                                
+                                    className="p-3 bg-white shadow rounded-xl">
                                     <BarMenusComponent id={Number(id)} menus ={menus} fetchBar={fetchBar}/>
-                                </TabPanel>
+                            </TabPanel>
+
+                                
 
                                 <TabPanel
                                

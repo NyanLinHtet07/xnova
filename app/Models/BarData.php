@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\BarMenu;
 use App\Models\Category;
 use App\Models\BarImageGallery;
+use App\Models\BarPromo;
 use Illuminate\Database\Eloquent\Model;
 
 class BarData extends Model
@@ -51,5 +52,10 @@ class BarData extends Model
     public function images()
     {
         return $this->hasMany(BarImageGallery::class, 'bar_id', 'id');
+    }
+
+    public function promos()
+    {
+        return $this->hasMany(BarPromo::class, 'bar_id', 'id');
     }
     }

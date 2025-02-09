@@ -114,7 +114,7 @@ class BarDataAPIController extends Controller
      */
     public function show(string $id)
     {
-        $bar = BarData::with('menus', 'category', 'images')
+        $bar = BarData::with('menus', 'category', 'images', 'promos')
                         ->findOrFail($id);
 
         $bar->images = collect(json_decode($bar->image))->map(function ($imagePath){

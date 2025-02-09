@@ -33,3 +33,14 @@ export interface barImages {
     bar_id: numbar,
     image: string
 }
+
+export interface BarPromos {
+    id: number,
+    bar_id: number,
+    image: string,
+    description: string,
+    start_promo: date,
+    end_promo: date,
+    is_active: number,
+    is_cover: number
+}

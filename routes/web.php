@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BarData\BarDataAPIController;
 use App\Http\Controllers\API\BarData\BarMenuAPIController;
 use App\Http\Controllers\API\BarData\BarImageGalleryAPIController;
 use App\Http\Controllers\API\Categroy\CategroyAPIController;
+use App\Http\Controllers\API\BarData\BarPromoAPIController;
 
 use Inertia\Inertia;
 
@@ -45,6 +46,10 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/bar/{id}', function($id){
         return Inertia::render('Admin/Bars/BarDetailScreen', ['id' => $id]);
     })->name('admin.bar.detail');
+
+    Route::get('/bar/{id}/promo', function($id){
+        return Inertia::render('Admin/Bars/BarPromoIndexScreen', ['id' => $id]);
+    })->name('admin.bar.promo');
 });
 
 // Route::get('/dashboard', function () {
@@ -62,10 +67,13 @@ Route::prefix('api')->middleware('api')->group(function (){
     Route::apiResource('menus', BarMenuAPIController::class);
     Route::apiResource('categories', CategroyAPIController::class);
     Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
+    Route::apiResource('bar/promo', BarPromoAPIController::class);
 
     Route::get('bar/gallery/by-bar/{barID}', [BarImageGalleryAPIController::class, 'getDataByBar']);
     Route::post('import/barData', [BarDataAPIController::class, 'importDataBtExcel']);
     //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
+    Route::get('bar/promo/by-bar/{barID}', [BarPromoAPIController::class, 'promoListByBar']);
+
 });
 
 require __DIR__.'/auth.php';
