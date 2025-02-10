@@ -230,11 +230,14 @@ export default function BarDetailScreen() {
                     <TabPanels className="mt-2">
                             <TabPanel
                                     className="p-3 bg-white shadow rounded-xl">
-                                    <Link className='px-4 py-3 my-10 text-white rounded-lg h-52 w-80 bg-cyan-900 hover:text-cyan-950' 
+                                   
+                                    <Link className='flex items-center justify-center w-64 h-64 text-xl font-bold text-white rounded-lg  bg-cyan-800' 
                                             href={route('admin.bar.promo', {id: id})}>
                                                                        
                                                         <span> Go to Promotion Page </span>
                                     </Link>
+
+                                   
                             </TabPanel>
                             <TabPanel
                                 className="p-3 bg-white shadow rounded-xl">

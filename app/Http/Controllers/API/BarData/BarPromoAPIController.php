@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BarPromo;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class BarPromoAPIController extends Controller
 {
@@ -36,6 +37,9 @@ class BarPromoAPIController extends Controller
             'end_promo' => 'nullable'
         ]);
 
+        $start = Carbon::parse($request->start_promo)->toDateString();
+        $end = Carbon::parse($request->end_promo)->toDateString();
+
         if($request->hasFile('image')){
             $image = $request->file('image');
             $path = $image->store('bars/promo', 'public');
@@ -46,8 +50,8 @@ class BarPromoAPIController extends Controller
             'bar_id' => $request->bar_id,
             'image' => $fullpath,
             'description' => $request->description,
-            'start_promo' => $request->start_promo,
-            'end_promo' => $request->end_promo
+            'start_promo' => $start,
+            'end_promo' => $end
         ]);
 
         return response()->json([

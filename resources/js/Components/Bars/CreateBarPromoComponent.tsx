@@ -81,8 +81,10 @@ const CreateBarPromoComponent:React.FC<CreateBarDetailProps> = ({
           <div className="grid grid-cols-2 gap-4 mx-8">
                        
 
-                                   <div className="col-span-2">
-                                    <Popover className="relative">
+                                   <div className="flex justify-start col-span-4">
+                                   
+                                    <Popover className="relative mr-20">
+                                    <InputLabel value="Start Promotion" className="mb-2 text-lg"/>
                                     <PopoverButton className="px-4 py-2 border rounded-lg">
                                         {startPromo ? startPromo.toDateString() : "Select Date"}
                                     </PopoverButton>
@@ -95,10 +97,10 @@ const CreateBarPromoComponent:React.FC<CreateBarDetailProps> = ({
                                     />
                                     </PopoverPanel>
                                     </Popover>
-                                   </div>
-
-                                   <div className="col-span-2">
+                                  
+                                   
                                     <Popover className="relative">
+                                    <InputLabel value="End Promotion" className="mb-2 text-lg"/>
                                         <PopoverButton className="px-4 py-2 border rounded-lg">
                                             {endPromo ? endPromo.toDateString() : "Select End Date"}
                                         </PopoverButton>
