@@ -7,14 +7,15 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, Dialo
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { IconEdit, IconPlus } from '@tabler/icons-react';
+import { IconEdit, IconPlus, IconBuildingStore, IconClockHour3, IconInfoOctagon, IconCirclesRelation, IconMapPin, IconPhoneCall } from '@tabler/icons-react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import { Category } from '@/types/category';
 import BarImagesComponent from '@/Components/Bars/BarImagesComponent';
-
+import BarAmentiesComponent from '@/Components/Bars/BarAmentiesComponent';
 import 'react-quill/dist/quill.snow.css';
-import NavLink from '@/Components/NavLink';
+
+
 
 export default function BarDetailScreen() {
     const [bar, setBar] = useState<Bar | null>(null);
@@ -38,9 +39,11 @@ export default function BarDetailScreen() {
     const [web, setWeb] = useState('');
     const [address, setAddress] = useState('');
     const [contact, setContact] = useState('');
+    const [amenities, setAmenities] = useState('');
+  
 
 
-    const tabs = ["General", "Images", "Promo","Customers"];
+    const tabs = ["General", "Images", "Amenities", "Menus","Customers"];
 
     const handleDescription = (data: string) => {
         setDescription(data);
@@ -71,6 +74,7 @@ export default function BarDetailScreen() {
                     .then(res => {
                         setBar(res.data);
                         setMenus(res.data.menus);
+                        setAmenities(res.data.amenities);
                     })
     }
 
@@ -113,9 +117,7 @@ export default function BarDetailScreen() {
         formData.append('web', web);
         formData.append('address', address);
         formData.append('contact', contact);
-        // images.forEach((image) => {
-        //     formData.append('images[]', image);
-        // });
+
         if (cover) {
             formData.append('cover', cover);
         }
@@ -161,51 +163,51 @@ export default function BarDetailScreen() {
                     <div className='flex justify-end '>
                     <IconEdit size={24} color='green' onClick={() => handleOpen()}/>
                 </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                                Name
+                               <IconBuildingStore className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                                 {bar?.name}
                             </p>
                         </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                            Opening Hour:
+                            <IconClockHour3 className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                             {bar?.opening_time}
                             </p>
                         </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                            Description
+                            <IconInfoOctagon className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                             <div dangerouslySetInnerHTML={{ __html: bar?.description || "" }} className='text-sm '/>
                             </p>
                         </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                            Website
+                            <IconCirclesRelation className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                             {bar?.web}
                             </p>
                         </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                            Address
+                                <IconMapPin className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                             {bar?.address}
                             </p>
                         </div>
-                        <div className='grid grid-cols-4 px-3 py-1'>
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
                             <p className='col-span-1 '>
-                            Contact
+                            <IconPhoneCall className='text-gray-600 '/>
                             </p>
-                            <p className='col-span-3 '>
+                            <p className='col-span-7 '>
                             {bar?.contact}
                             </p>
                         </div>
@@ -213,7 +215,7 @@ export default function BarDetailScreen() {
                     </div>
                 
                 <TabGroup>
-                    <TabList className="flex p-1 space-x-1 rounded-lg bg-cyan-900/20">
+                    <TabList className="flex p-1 mt-4 space-x-1 rounded-lg bg-cyan-900/40">
                         {tabs.map((tab) => (
                             <Tab
                                 key={tab}
@@ -230,12 +232,20 @@ export default function BarDetailScreen() {
                     <TabPanels className="mt-2">
                             <TabPanel
                                     className="p-3 bg-white shadow rounded-xl">
+                                   <div className='flex space-x-3'>
+                                   {/* <Link className='flex items-center justify-center w-56 text-xl font-bold text-white rounded-lg h-44 bg-sky-300' 
+                                                href={route('admin.bar.promo', {id: id})}>
+                                                                        
+                                                            <span> Amenties Lists </span>
+                                        </Link> */}
+                                    <Link className='flex items-center justify-center w-56 text-xl font-bold text-white rounded-lg h-44 bg-cyan-800' 
+                                                href={route('admin.bar.promo', {id: id})}>
+                                                                        
+                                                            <span> Go to Promotion Page </span>
+                                        </Link>
+                                        
+                                   </div>
                                    
-                                    <Link className='flex items-center justify-center w-64 h-64 text-xl font-bold text-white rounded-lg  bg-cyan-800' 
-                                            href={route('admin.bar.promo', {id: id})}>
-                                                                       
-                                                        <span> Go to Promotion Page </span>
-                                    </Link>
 
                                    
                             </TabPanel>
@@ -244,19 +254,22 @@ export default function BarDetailScreen() {
                                 <BarImagesComponent cover={bar?.cover} barID={bar?.id} />
                             </TabPanel>
                        
+                            
+
                             <TabPanel
-                                
+                                    className="p-3 bg-white shadow rounded-xl">
+                                    <BarAmentiesComponent id={Number(id)} fetchBar={fetchBar} amenities={amenities}/>
+                            </TabPanel>
+
+                            <TabPanel
                                     className="p-3 bg-white shadow rounded-xl">
                                     <BarMenusComponent id={Number(id)} menus ={menus} fetchBar={fetchBar}/>
                             </TabPanel>
 
-                                
-
-                                <TabPanel
-                               
+                            <TabPanel   
                                className="p-3 bg-white shadow rounded-xl">
                                    Hello Desc
-                               </TabPanel>
+                            </TabPanel>
                       
                     </TabPanels>
                 </TabGroup>

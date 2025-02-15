@@ -7,27 +7,42 @@ import { BarPromos } from '../../../types/bar';
 import { useEffect, useState } from 'react';
 import BarPromoListComponent from '@/Components/Bars/BarPromoListComponent';
 
-const tabs = ['Create Promotion', 'Promotion List']
+const tabs = ['Create Promotion', 'Active Promotion List', 'Deactive Promotion List']
 export default function BarPromoIndexScreen(){
     const [promoLists, setPromoLists] = useState<BarPromos[]>([]);
-    
+    const [activepromoList, setActivePromoLists] = useState<BarPromos[]>([]);
+    const [deActivepromoList, setDeActivePromoLists] = useState<BarPromos[]>([]);
+
     const {props} = usePage();
     const {id} = props;
 
     const fetchBarPromos = async() => {
         try{
-            await axios.get(`/api/bar/promo/by-bar/${id}`)
-                        .then(res => {
-                            setPromoLists(res.data);
-                        })
+           const res = await axios.get(`/api/bar/promo/by-bar/${id}`)
+           const promos = res.data;
+            setPromoLists(promos);
+            setActivePromoLists(promos.filter((list: { is_active: number; }) => list.is_active === 1));
+            setDeActivePromoLists(promos.filter((list: { is_active: number; }) => list.is_active === 0));
+                        
         } catch(e){
             console.log(e)
         }
     }
 
+    const filterActive = () => {
+        return promoLists?.filter((list) => (
+              list.is_active == 1
+        ))
+    }
+
     useEffect(() => {
         fetchBarPromos()
-    }, [])
+    }, []);
+
+   
+
+    console.log('active', JSON.stringify(filterActive))
+    
 
     return (
         <AdminAuthenticatedLayout  header={
@@ -60,7 +75,11 @@ export default function BarPromoIndexScreen(){
                     </TabPanel>
                     <TabPanel
                         className="p-3 bg-white shadow rounded-xl">
-                       <BarPromoListComponent promoLists = {promoLists}/>                
+                       <BarPromoListComponent promoLists = {activepromoList} fetchBarPromos={fetchBarPromos} active={1}/>                
+                    </TabPanel>
+                    <TabPanel
+                        className="p-3 bg-white shadow rounded-xl">
+                       <BarPromoListComponent promoLists = {deActivepromoList} fetchBarPromos={fetchBarPromos} active={0}/>                
                     </TabPanel>
                 </TabPanels>
                 </TabGroup>

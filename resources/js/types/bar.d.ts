@@ -37,6 +37,7 @@ export interface barImages {
 export interface BarPromos {
     id: number,
     bar_id: number,
+    bar: Bar,
     image: string,
     description: string,
     start_promo: date,

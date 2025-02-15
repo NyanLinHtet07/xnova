@@ -14,7 +14,16 @@ class BarPromoAPIController extends Controller
     public function index()
     {
         $promos = BarPromo::with('bar')
-                            ->all();
+                            ->get();
+
+        return response()->json($promos, 200);
+    }
+
+    public function promoListCover()
+    {
+        $promos = BarPromo::with('bar')
+                            ->where('is_cover', '!=' , 0)
+                            ->get();
 
         return response()->json($promos, 200);
     }
@@ -25,6 +34,8 @@ class BarPromoAPIController extends Controller
 
         return response()->json($promos, 200);
     }
+
+    
 
     
     public function store(Request $request)

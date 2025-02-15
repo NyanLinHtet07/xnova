@@ -1,5 +1,5 @@
 import { BarPromos } from "@/types/bar";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconEyeClosed, IconPlus } from "@tabler/icons-react";
 import React, { Fragment, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Popover, PopoverButton, PopoverPanel, } from "@headlessui/react";
@@ -8,16 +8,21 @@ import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+import axios from "axios";
 
 
 interface BarPromoListProps {
-    promoLists: BarPromos[]
+    promoLists: BarPromos[],
+    fetchBarPromos: () => void,
+    active: number
 }
 
 const BarPromoListComponent:React.FC<BarPromoListProps> = ({
-    promoLists
+    promoLists,
+    fetchBarPromos,
+    active
 }) => {
-    const headers = ['No', 'Image', 'Description', 'Start Date', 'End Date', 'Edit']
+    const headers = ['No', 'Image', 'Description', 'Start Date', 'End Date', 'Request Cover' ,'Disable']
     const [isOpen, setIsOpen] = useState(false);
     const [selectedData, setSelectedData] = useState<BarPromos | null>(null);
     const [image, setImage] = useState<File | null>(null);
@@ -40,8 +45,41 @@ const BarPromoListComponent:React.FC<BarPromoListProps> = ({
                     multiple: false
                 });
                 
-    const updateData = async() => {
+    const updateData = async(promo: BarPromos) => {
+        if(active == 1){
+            promo.is_active = 0
+        }
+        else{
+            promo.is_active = 1
+        }
+        
+        try{
+            await axios.put(`/api/bar/promo/${promo.id}`, promo)
+            .then(() => {
+                fetchBarPromos()
+            })
+        }
+        catch(e){
+            console.error('err')
+        }
 
+      
+    }
+
+    const requestCover = async(promo: BarPromos) => {
+       
+        promo.is_cover = 1
+        try{
+            await axios.put(`/api/bar/promo/${promo.id}`, promo)
+            .then(() => {
+                fetchBarPromos()
+            })
+        }
+        catch(e){
+            console.error('err')
+        }
+
+      
     }
     return (
         <div className='bg-white rounded-lg shadow-sm'>
@@ -78,15 +116,27 @@ const BarPromoListComponent:React.FC<BarPromoListProps> = ({
                                         {promo.end_promo}
                                     </td>
                                     <td className="px-4 py-2 border-b">
-                                        <IconEdit size={24} color="green" onClick={() => handleOpen(promo)}/>
+                                        { promo.is_cover == 0 ? 
+                                                ( <button onClick={() => requestCover(promo)} className="px-3 py-2 text-sm text-white rounded-lg bg-cyan-800">Request</button>):
+                                          promo.is_cover == 1 ?
+                                                ( <p className="font-semibold text-gray-800 ">Pending Request</p> ):
+                                          promo.is_cover == 2 ?
+                                                (<p className="font-semibold text-gray-800 ">APPROVED</p>) : null
+                                        }
                                     </td>
+                                    <td className="px-4 py-2 border-b">
+                                        <IconEye size={24} onClick={() => updateData(promo)} className=" text-cyan-900"/>
+                                    </td>
+                                    {/* <td className="px-4 py-2 border-b">
+                                        <IconEdit size={24} color="green" onClick={() => handleOpen(promo)}/>
+                                    </td> */}
                                 </tr>
                             ))
                         }
                     </tbody>
         </table>
 
-        <Transition appear show={isOpen} as={Fragment}>
+        {/* <Transition appear show={isOpen} as={Fragment}>
                         <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
                             <TransitionChild
                                 as={Fragment}
@@ -118,54 +168,6 @@ const BarPromoListComponent:React.FC<BarPromoListProps> = ({
                                         <div className="grid grid-cols-2 gap-4 mx-8">
                        
 
-                       <div className="flex justify-start col-span-4">
-                       
-                        {/* <Popover className="relative mr-20">
-                        <InputLabel value="Start Promotion" className="mb-2 text-lg"/>
-                        <PopoverButton className="px-4 py-2 border rounded-lg">
-                            {selectedData?.start_promo ? startPromo.toDateString() : "Select Date"}
-                        </PopoverButton>
-                       
-                        <PopoverPanel className="absolute z-10 p-2 bg-white rounded-lg shadow-lg">
-                        <DayPicker 
-                            mode="single"
-                            selected={startPromo}
-                            onSelect={setStartPromo}
-                        />
-                        </PopoverPanel>
-                        </Popover>
-                      
-                       
-                        <Popover className="relative">
-                        <InputLabel value="End Promotion" className="mb-2 text-lg"/>
-                            <PopoverButton className="px-4 py-2 border rounded-lg">
-                                {endPromo ? endPromo.toDateString() : "Select End Date"}
-                            </PopoverButton>
-                            <PopoverPanel className="absolute z-10 p-2 bg-white rounded-lg shadow-lg">
-                            <DayPicker
-                                mode="single"
-                                selected={endPromo}
-                                onSelect={setEndPromo}
-                            />
-                            </PopoverPanel>
-                        </Popover> */}
-                        
-                        
-                       </div>
-                        
-
-                        {/* <div className="col-span-4 h-96">
-                            <InputLabel value="Description" className="mb-2 text-lg"/>
-                            <ReactQuill
-                                value={description}
-                                onChange={handleDescription}
-                                
-                                className="w-full rounded-lg h-72"
-                            />
-                        </div> */}
-                    
-
-                
 
                     <div className='justify-start col-span-4 ' {...getRootProps()}>
                     <div className='flex justify-start pl-3 mt-3'>
@@ -197,13 +199,11 @@ const BarPromoListComponent:React.FC<BarPromoListProps> = ({
                                 </TransitionChild>
                             </div>
                         </Dialog>
-                    </Transition>
+                    </Transition> */}
         </div>
     );
 }
 
 export default BarPromoListComponent;
 
-function setIsOpen(arg0: boolean) {
-    throw new Error("Function not implemented.");
-}
+

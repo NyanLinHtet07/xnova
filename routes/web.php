@@ -31,6 +31,10 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/Category/CategoryIndex');
     })->name('admin.category');
 
+    Route::get('/bar/covers', function(){
+        return Inertia::render('Admin/Promotions/PromotionCoverIndex');
+    })->name('admin.promos.cover');
+
     Route::get('/bar/create', function(){
         return Inertia::render('Admin/Bars/BarCreateScreen');
     })->name('admin.create-bar');
@@ -50,6 +54,8 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/bar/{id}/promo', function($id){
         return Inertia::render('Admin/Bars/BarPromoIndexScreen', ['id' => $id]);
     })->name('admin.bar.promo');
+
+    
 });
 
 // Route::get('/dashboard', function () {
@@ -69,11 +75,14 @@ Route::prefix('api')->middleware('api')->group(function (){
     Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
     Route::apiResource('bar/promo', BarPromoAPIController::class);
 
+
+    Route::get('/covers', [BarPromoAPIController::class, 'promoListCover']);
     Route::get('bar/gallery/by-bar/{barID}', [BarImageGalleryAPIController::class, 'getDataByBar']);
     Route::post('import/barData', [BarDataAPIController::class, 'importDataBtExcel']);
+    Route::put('bar/{barID}/update-amenties', [BarDataAPIController::class, 'updateAmenties']);
     //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
     Route::get('bar/promo/by-bar/{barID}', [BarPromoAPIController::class, 'promoListByBar']);
-
+    
 });
 
 require __DIR__.'/auth.php';

@@ -60,7 +60,8 @@ class BarDataAPIController extends Controller
             'location_long' => 'nullable',
             'web' => 'nullable',
             'address' => 'nullable',
-            'contact' => 'nullable'
+            'contact' => 'nullable',
+            'amenities' => 'nullable'
         ]);
 
         $images = $request->file('images');
@@ -101,7 +102,8 @@ class BarDataAPIController extends Controller
             'location_long' => $request->location_long,
             'web' => $request->web,
             'address' => $request->address,
-            'contact' => $request->contact
+            'contact' => $request->contact,
+            'amenities' => $request->amenities,
         ]);
 
         return response()->json($bars, 200);
@@ -144,7 +146,8 @@ class BarDataAPIController extends Controller
             'location_long' => 'nullable',
             'web' => 'nullable',
             'address' => 'nullable',
-            'contact' => 'nullable'
+            'contact' => 'nullable',
+            'amenities' => 'nullable'
         ]);
 
         $imagePaths = $bar->images ? json_decode($bar->images, true) : [];
@@ -153,9 +156,7 @@ class BarDataAPIController extends Controller
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image){
                 if($image->isValid()){
-                    // $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    // $image->move(public_path('uploads/bars'), $filename);
-                    // $imagePaths[] = 'uploads/bars/' . $filename;
+                   
                     $path = $image->store('bars', 'public');
                     $imagePaths[] = 'storage/' . $path;
                 }
@@ -181,15 +182,28 @@ class BarDataAPIController extends Controller
             'location_long' => $request->location_long,
             'web' => $request->web,
             'address' => $request->address,
-            'contact' => $request->contact
+            'contact' => $request->contact,
+            'amenities' => $request->amenities,
         ]);
 
         return response()->json($bar, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function updateAmenties($id, Request $request)
+    {
+        $bar = BarData::findOrFail($id);
+
+        $request->validate([
+            'amenities' => 'required'
+        ]);
+
+        $bar->update([
+            'amenities' => $request->amenities
+        ]);
+
+        return response()->json($bar, 200);
+    }
+    
     public function destroy(string $id)
     {
         $bar = BarData::findOrFail($id);
