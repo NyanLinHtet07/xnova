@@ -82,6 +82,7 @@ Route::prefix('api')->middleware('api')->group(function (){
     Route::put('bar/{barID}/update-amenties', [BarDataAPIController::class, 'updateAmenties']);
     //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
     Route::get('bar/promo/by-bar/{barID}', [BarPromoAPIController::class, 'promoListByBar']);
+    Route::get('bar/list/by-name', [BarDataAPIController::class, 'getListByName']);
     
 });
 

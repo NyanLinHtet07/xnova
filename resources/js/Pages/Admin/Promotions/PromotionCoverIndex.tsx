@@ -9,6 +9,7 @@ import axios from "axios";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, DialogPanel, DialogTitle, Tab, TabGroup, TabList, TabPanel, TabPanels, Transition, TransitionChild } from '@headlessui/react';
 import { BarPromos } from "@/types/bar";
 import PromoCoverList from "@/Components/Cover/PromoCoverList";
+import CreatePromoCover from "@/Components/Cover/CreatePromoCover";
 
 export default function PromotionCoverIndex() {
     const tabs = ['Create Cover', 'Cover List', 'Pending Cover'];
@@ -41,7 +42,7 @@ export default function PromotionCoverIndex() {
             </h2>
         }  >
         <Head title="Bars"/>
-        <div className="py-12 mx-auto max-w-7xl">
+        <div className="pt-2 mx-auto max-w-7xl">
         <TabGroup>
             <TabList className="flex p-1 mt-4 space-x-1 rounded-lg bg-cyan-900/40">
                     {tabs.map((tab) => (
@@ -60,9 +61,7 @@ export default function PromotionCoverIndex() {
             <TabPanels className="mt-2">
                 <TabPanel
                     className="p-3 bg-white shadow rounded-xl">
-                    <div>
-                        Hello Create
-                    </div>
+                    <CreatePromoCover fetchBarPromos={fetchPromos}/>
                 </TabPanel>
                 <TabPanel
                     className="p-3 bg-white shadow rounded-xl">

@@ -44,6 +44,13 @@ const CreateBarPromoComponent:React.FC<CreateBarDetailProps> = ({
                 onDrop,
                 multiple: false
             });
+
+      const reset = () => {
+                setImage(null);
+                setDescription('');
+                setStartPromo(undefined);
+                setEndPromo(undefined)
+            }
             
         const CreateData = async() => {
             const formData = new FormData();
@@ -63,6 +70,7 @@ const CreateBarPromoComponent:React.FC<CreateBarDetailProps> = ({
                     }
                 });
                 fetchBarPromos();
+                reset();
                 setSnackBarMessage("Data Uploaded Successfully");
                 setSnackBarType('success');
                 setShowSnackBar(true);

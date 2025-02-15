@@ -31,6 +31,13 @@ class BarDataAPIController extends Controller
         return response()->json($barDatas, 200);
     }
 
+    public function getListByName(){
+        $bars = BarData::select('id', 'name')
+                        ->get();
+
+        return response()->json($bars, 200);
+    }
+
     public function importDataBtExcel(Request $request)
     {
         $request->validate([

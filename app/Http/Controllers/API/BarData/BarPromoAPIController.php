@@ -57,13 +57,21 @@ class BarPromoAPIController extends Controller
             $fullpath = 'storage/' . $path;
         }
 
-        $barPromo = BarPromo::create([
+
+        $data = [
             'bar_id' => $request->bar_id,
             'image' => $fullpath,
             'description' => $request->description,
             'start_promo' => $start,
-            'end_promo' => $end
-        ]);
+            'end_promo' => $end,
+        ];
+
+        if($request->is_active && $request->is_cover){
+            $data['is_active'] = $request->is_active;
+            $data['is_cover'] = $request->is_cover;
+        }
+
+        $barPromo = BarPromo::create($data);
 
         return response()->json([
             'message' => 'Uploaded Successfully',
