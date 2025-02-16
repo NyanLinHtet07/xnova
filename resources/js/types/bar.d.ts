@@ -24,10 +24,17 @@ export interface Bar {
 export interface Menus {
     id: number,
     title: string,
-    menus: string
+    menus: string,
+    menuitems: MenuItems[], 
 
 }
 
+export interface MenuItems {
+    id: number,
+    image: string,
+    name: string,
+    price: number
+}
 export interface barImages {
     id: number,
     bar_id: numbar,

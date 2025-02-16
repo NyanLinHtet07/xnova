@@ -13,6 +13,7 @@ import TextInput from '@/Components/TextInput';
 import { Category } from '@/types/category';
 import BarImagesComponent from '@/Components/Bars/BarImagesComponent';
 import BarAmentiesComponent from '@/Components/Bars/BarAmentiesComponent';
+import BarMenusNewComponent from '@/Components/Bars/BarMenusNewComponent';
 import 'react-quill/dist/quill.snow.css';
 
 
@@ -43,7 +44,7 @@ export default function BarDetailScreen() {
   
 
 
-    const tabs = ["General", "Images", "Amenities", "Menus","Customers"];
+    const tabs = ["General", "Images", "Amenities", "Menu", "Customers"];
 
     const handleDescription = (data: string) => {
         setDescription(data);
@@ -263,7 +264,7 @@ export default function BarDetailScreen() {
 
                             <TabPanel
                                     className="p-3 bg-white shadow rounded-xl">
-                                    <BarMenusComponent id={Number(id)} menus ={menus} fetchBar={fetchBar}/>
+                                    <BarMenusNewComponent id={Number(id)}/>
                             </TabPanel>
 
                             <TabPanel   

@@ -3,12 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\BarData\BarDataAPIController;
-use App\Http\Controllers\API\BarData\BarMenuAPIController;
-use App\Http\Controllers\API\BarData\BarImageGalleryAPIController;
-use App\Http\Controllers\API\Categroy\CategroyAPIController;
-use App\Http\Controllers\API\BarData\BarPromoAPIController;
-
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -58,9 +52,7 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
     
 });
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Admin/AdminHomeScreen');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -68,22 +60,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('api')->middleware('api')->group(function (){
-    Route::apiResource('bars', BarDataAPIController::class);
-    Route::apiResource('menus', BarMenuAPIController::class);
-    Route::apiResource('categories', CategroyAPIController::class);
-    Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
-    Route::apiResource('bar/promo', BarPromoAPIController::class);
-
-
-    Route::get('/covers', [BarPromoAPIController::class, 'promoListCover']);
-    Route::get('bar/gallery/by-bar/{barID}', [BarImageGalleryAPIController::class, 'getDataByBar']);
-    Route::post('import/barData', [BarDataAPIController::class, 'importDataBtExcel']);
-    Route::put('bar/{barID}/update-amenties', [BarDataAPIController::class, 'updateAmenties']);
-    //Route::get('menus/by-bar/{id}', BarMenuAPIController::class, 'getMenuByBars');
-    Route::get('bar/promo/by-bar/{barID}', [BarPromoAPIController::class, 'promoListByBar']);
-    Route::get('bar/list/by-name', [BarDataAPIController::class, 'getListByName']);
-    
-});
-
+Route::middleware('api')->prefix('api')->group(base_path('routes/api.php'));
 require __DIR__.'/auth.php';

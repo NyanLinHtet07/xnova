@@ -15,7 +15,8 @@ class BarMenuAPIController extends Controller
     }
 
     public function getMenuByBars($id){
-        $menus = BarMenu::where('bar_id', $id)
+        $menus = BarMenu::with('menuitems')
+                        ->where('bar_id', $id)
                         ->get();
 
         return response()->json($menus, 200);
@@ -26,13 +27,13 @@ class BarMenuAPIController extends Controller
         $request->validate([
             'bar_id' => 'required',
             'title' => 'required|string',
-            'menus' => 'required|string'
+            //'menus' => 'required|string'
         ]);
 
         $menu = BarMenu::create([
             'bar_id' => $request->bar_id,
             'title' => $request->title,
-            'menus' => $request->menus
+            //'menus' => $request->menus
         ]);
 
         return response()->json($menu, 200);
@@ -50,7 +51,7 @@ class BarMenuAPIController extends Controller
         $request->validate([
             'bar_id' => 'required',
             'title' => 'required|string',
-            'menus' => 'required|string'
+            //'menus' => 'required|string'
         ]);
 
         $menu = BarMenu::findOrFail($id);
@@ -58,7 +59,7 @@ class BarMenuAPIController extends Controller
         $menu->update([
             'bar_id' => $request->bar_id,
             'title' => $request->title,
-            'menus' => $request->menus
+            //'menus' => $request->menus
         ]);
 
         return response()->json($menu, 200);
