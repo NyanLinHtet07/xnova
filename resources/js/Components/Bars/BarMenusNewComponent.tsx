@@ -96,7 +96,7 @@ const BarMenusNewComponent:React.FC<BarMenusComponentProps> = ({
             setMenuItemName('');
             setMenuItemPrice('');
             setMenuItemImage(null);
-            setVisibleMenuId(null);
+            // setVisibleMenuId(null);
             fetchMenus();
         }
         catch (error) {
@@ -200,73 +200,92 @@ const BarMenusNewComponent:React.FC<BarMenusComponentProps> = ({
                             <div className="flex justify-between ">
                             <p className="font-bold "> {menu.title} </p>
                                 <span className="flex space-x-3">
-                                        <IconEdit size={24} color="green" onClick={() => handleOpen(menu)}/>
-                                        <button onClick={() => setVisibleMenuId(visibleMenuId === menu.id ? null : menu.id)} className="px-2 py-1 text-xs text-white rounded-lg bg-cyan-800">Add Menu Item</button>
+                                {
+                                    visibleMenuId === menu.id && (
+                                        // <IconEdit size={24} color="green" onClick={() => handleOpen(menu)}/>
+                                        <button onClick={() => handleOpen(menu)} 
+                                            className="px-3 py-2 text-xs text-white rounded-lg bg-slate-800">
+                                            Update Title
+                                        </button>
+                                    )
+                                }
+                                       
+                                        <button onClick={() => setVisibleMenuId(visibleMenuId === menu.id ? null : menu.id)} 
+                                            className="px-3 py-2 text-xs text-white rounded-lg bg-cyan-800">
+                                                Menu List
+                                        </button>
                                     </span>
                             </div>
                             {
                                 visibleMenuId === menu.id && (
+                                    <>
                                     <div className="flex justify-between p-3 mt-2 bg-white border rounded-lg">
-                                <div>
-                                    <InputLabel value="Item Name" />
-                                    <TextInput 
-                                    type="text" 
-                                    value={menuItemName} 
-                                    onChange={(e) => setMenuItemName(e.target.value)} 
-                                    className="block w-full mt-1"
-                                    />
-                                </div>
+                                        <div>
+                                            <InputLabel value="Item Name" />
+                                            <TextInput 
+                                            type="text" 
+                                            value={menuItemName} 
+                                            onChange={(e) => setMenuItemName(e.target.value)} 
+                                            className="block w-full mt-1"
+                                            />
+                                        </div>
 
-                                <div>
-                                <InputLabel value="Price" />
-                                <TextInput 
-                                type="number" 
-                                value={menuItemPrice} 
-                                onChange={(e) => setMenuItemPrice(e.target.value)} 
-                                className="block w-full mt-1"
-                                />
-                                </div>
+                                        <div>
+                                        <InputLabel value="Price" />
+                                        <TextInput 
+                                        type="number" 
+                                        value={menuItemPrice} 
+                                        onChange={(e) => setMenuItemPrice(e.target.value)} 
+                                        className="block w-full mt-1"
+                                        />
+                                        </div>
 
-                                <div>
-                                <InputLabel value="Item Image" />
-                                    <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    onChange={(e) => setMenuItemImage(e.target.files?.[0] || null)} 
-                                    className="block w-full mt-1"
-                                    />
-                                </div>
-                               
-                                
-                                
-
-                                
-                                <div>
-                                <button 
-                                className="px-3 py-3 mt-4 text-xs text-white rounded-lg bg-cyan-800"
-                                onClick={() => submitMenuItem(menu.id)}
-                                >
-                                Save Item
-                                </button>
-                                </div>
-                               
-                            </div>
+                                        <div>
+                                        <InputLabel value="Item Image" />
+                                            <input 
+                                            type="file" 
+                                            accept="image/*" 
+                                            onChange={(e) => setMenuItemImage(e.target.files?.[0] || null)} 
+                                            className="block w-full mt-1"
+                                            />
+                                        </div>
+     
+                                        <div>
+                                        <button 
+                                        className="px-3 py-3 mt-4 text-xs text-white rounded-lg bg-cyan-800"
+                                        onClick={() => submitMenuItem(menu.id)}
+                                        >
+                                        Save Item
+                                        </button>
+                                        </div>
+                                    
+                                    </div>
+                                    <div>
+                                    {menu.menuitems.map(item => (
+                                        <div key={item.id} className="flex items-center justify-between p-3 mt-2 bg-white border rounded-lg">
+                                        
+                                            <img src={item.image ? `/${item.image}` : "/nodata.jpg"}  alt={item.name} className="object-cover w-16 h-16 mr-3 rounded-md" />
+                                        
+                                            <div className="flex ">
+                                                <div>
+                                                    <h4 className="font-bold">{item.name}</h4>
+                                                    <h4 className="">{item.price} MMK</h4>
+                                                </div>
+                                                <div className="ml-10 mr-10">
+                                                <IconEdit size={24} color="green" onClick={() => handleListOpen(item)}/>
+                                                </div>
+                                            
+                                            
+                                            </div>
+                                            
+                                        </div>
+                                        ))}
+                                    </div>
+                                    </>
                                 )
                             }
 
-                            {menu.menuitems.map(item => (
-                            <div key={item.id} className="flex items-center justify-between p-3 mt-2 bg-white border rounded-lg">
-                              
-                                <img src={item.image ? `/${item.image}` : "/nodata.jpg"}  alt={item.name} className="object-cover w-16 h-16 mr-3 rounded-md" />
-                             
-                                <div className="flex ml-10 space-x-4">
-                                <h4 className="font-bold">{item.name}</h4>
-                                <p>Price: {item.price}</p>
-                                
-                                </div>
-                                <IconEdit size={24} color="green" onClick={() => handleListOpen(item)}/>
-                            </div>
-                            ))}
+                           
                            
                             
                            
@@ -300,9 +319,9 @@ const BarMenusNewComponent:React.FC<BarMenusComponentProps> = ({
                             leaveTo="opacity-0 scale-95"
                         >
                             <Dialog.Panel className="w-7/12 p-6 bg-white rounded-lg shadow-xl ">
-                                <Dialog.Title className="text-lg font-semibold">
+                                {/* <Dialog.Title className="text-lg font-semibold">
                                     Edit Menu
-                                </Dialog.Title>
+                                </Dialog.Title> */}
                                 <div className="grid grid-cols-2 gap-4 mx-8">
                 <div className="col-span-2 ">
                                             <InputLabel value="Title" className="mb-2 text-lg"/>

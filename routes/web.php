@@ -41,6 +41,18 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/Bars/BarListScreen');
     })->name('admin.bars');
 
+    Route::get('/assign-permissions', function(){
+        return Inertia::render('Admin/RoleAndPermissions/AssignRoleAndPermission');
+    })->name('admin.assign-role');
+
+    Route::get('role-permission', function(){
+        return Inertia::render('Admin/User/RoleAndPermission');
+    })->name('admin.role-permission');
+
+    Route::get('/user-role', function(){
+        return Inertia::render('Admin/User/AdminUserAssignRole');
+    })->name('admin.user-role');
+
     Route::get('/bar/{id}', function($id){
         return Inertia::render('Admin/Bars/BarDetailScreen', ['id' => $id]);
     })->name('admin.bar.detail');
