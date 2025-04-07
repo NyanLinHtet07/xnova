@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\API\BarData\BarDataAPIController;
 use App\Http\Controllers\API\BarData\BarMenuAPIController;
 use App\Http\Controllers\API\BarData\BarImageGalleryAPIController;
@@ -13,20 +13,10 @@ use App\Http\Controllers\API\Admin\UserAPIController;
 use App\Http\Controllers\API\Role\PermissionAPIController;
 use App\Http\Controllers\API\Role\RoleAPIController;
 use App\Http\Controllers\API\EarthQuick\HelpRequestAPIController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-
-
-//Route for auth
-Route::post('/user/register', [RegisteredUserController::class, 'apiRegister']);
-Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
-Route::post('/logout', [AuthenticatedSessionController::class, 'apiLogout'])->middleware('auth:sanctum');
-Route::put('/users/{userId}/generate-qr', [UserAPIController::class, 'generateQr']);
 
 Route::resource('users', UserAPIController::class);
 Route::resource('roles', RoleAPIController::class);
 Route::resource('permissions', PermissionAPIController::class);
-
 Route::apiResource('bars', BarDataAPIController::class);
 Route::apiResource('menus', BarMenuAPIController::class);
 Route::apiResource('categories', CategroyAPIController::class);
@@ -34,7 +24,6 @@ Route::apiResource('bar/gallery', BarImageGalleryAPIController::class);
 Route::apiResource('bar/promo', BarPromoAPIController::class);
 Route::apiResource('bar/menu/items', BarMenuItemsAPIController::class);
 Route::apiResource('earthquick/help-request', HelpRequestAPIController::class);
-
 
 Route::post('users/{id}/assign-role', [UserAPIController::class, 'assignRole'])->name('user.assignRole');
 
@@ -51,9 +40,3 @@ Route::get('bar/list/by-name', [BarDataAPIController::class, 'getListByName']);
 // Route::get('roles', [RolePermissionController::class, 'getRoles']);
 Route::get('permissions', [RolePermissionController::class, 'getPermissions']);
 Route::get('assign-roles', [RolePermissionController::class, 'assignRoles']);
-
-
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');

@@ -49,6 +49,10 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/User/RoleAndPermission');
     })->name('admin.role-permission');
 
+    Route::get('users', function(){
+        return Inertia::render('Admin/User/UserListScreen');
+    })->name('admin.users');
+
     Route::get('/user-role', function(){
         return Inertia::render('Admin/User/AdminUserAssignRole');
     })->name('admin.user-role');
@@ -72,5 +76,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('api')->prefix('api')->group(base_path('routes/api.php'));
+//Route::middleware('api')->prefix('api')->group(base_path('routes/api.php'));
 require __DIR__.'/auth.php';

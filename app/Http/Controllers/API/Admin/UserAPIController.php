@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class UserAPIController extends Controller
 {
@@ -88,4 +90,22 @@ class UserAPIController extends Controller
 
         return response()->json(['message'=>'Deleted User'], 200);
     }
+
+    public function generateQr($userId)
+    {
+        $user = User::find($userId);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $qrImage = QrCode::format('svg')->size(300)->generate($user->email);
+        $filePath = 'qrcodes/user-' . $user->id . '.svg';
+        Storage::disk('public')->put($filePath, $qrImage);
+        $user->qr = 'storage/' . $filePath;
+        $user->save();
+
+        return response()->json([
+            'message' => 'QR code generated successfully',
+        ]);
+    }
+
 }

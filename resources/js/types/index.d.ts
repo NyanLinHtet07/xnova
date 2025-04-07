@@ -6,6 +6,7 @@ export interface User {
     roles: RoleType[];
     permissions: string[];
     phone: string;
+    qr: string;
 }
 
 export type PageProps<

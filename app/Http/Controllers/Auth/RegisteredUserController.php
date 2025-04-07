@@ -13,6 +13,8 @@ use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -45,6 +47,13 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
         ]);
 
+        $qrImage = QrCode::format('svg')->size(300)->generate($user->email);
+        $filePath = 'qrcodes/user-' . $user->id . '.svg';
+        Storage::disk('public')->put($filePath, $qrImage);
+
+        $user->qr = 'storage/' . $filePath;
+        $user->save();
+        
         $user->syncRoles(['User']);
 
         event(new Registered($user));
@@ -52,5 +61,39 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('admin.dashboard', absolute: false));
+    }
+
+    public function apiRegister(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => 'nullable|string'
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+        ]);
+
+        $qrImage = QRCode::format('svg')->size(300)->generate($user->email);
+        $filePath = 'qrcodes/user-' . $user->id . '.svg';
+        Storage::disk('public')->put($filePath, $qrImage);
+        $user->qr = 'storage/' . $filePath;
+        $user->save();
+
+        $user->syncRoles(['User']);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        
+        $response = [
+            'user' => $user,
+            'token' => $token,
+        ];
+
+        return response()->json($response, 201);
     }
 }

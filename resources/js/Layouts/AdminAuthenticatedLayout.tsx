@@ -99,6 +99,13 @@ export default function Authenticated({
                                </NavLink>
                             </div> */}
 
+                    <div className="justify-start w-full px-2 py-2 mx-auto mb-1 ml-1 transition duration-500 hover:bg-slate-100 hover:text-cyan-950 rounded-xl">
+                            <NavLink className='flex-row p-1 text-white hover:text-cyan-950' href={route('admin.users')} active={route().current('admin.users')}>
+                                   
+                                   <span>User List </span>
+                               </NavLink>
+                            </div>
+
                             <div className="justify-start w-full px-2 py-2 mx-auto mb-1 ml-1 transition duration-500 hover:bg-slate-100 hover:text-cyan-950 rounded-xl">
                             <NavLink className='flex-row p-1 text-white hover:text-cyan-950' href={route('admin.role-permission')} active={route().current('admin.role-permission')}>
                                    

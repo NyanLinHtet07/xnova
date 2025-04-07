@@ -49,4 +49,29 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    public function apiLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if(!Auth::attempt($request->only('email', 'password'))){
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        $user = Auth::user();
+        return response()->json([
+            'token' => $user->createToken('auth_token')->plainTextToken,
+            'user' => $user
+        ]);
+
+    }
+
+    public function apiLogout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
+    }
 }
