@@ -1,5 +1,6 @@
 import { User } from ".";
 import { Category } from "./category";
+import { ReviewType } from "./review";
 
 export interface Bar {
     id: number,
@@ -18,6 +19,9 @@ export interface Bar {
     contact: string,
     category_id:number,
     category: Category;
+    reviews: ReviewType;
+    average_rating: number;
+    reviews_count: number;
 
 }
 

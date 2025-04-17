@@ -49,7 +49,7 @@ export default function BarListScreen() {
     fetchDatas(currentPage, searchText);
    }, [currentPage]);
 
-   const headers = ["Image", "Name", "Category","Opening"];
+   const headers = ["Image", "Name", "Rating","Category","Opening", "Detail"];
 
     return (
         <AdminAuthenticatedLayout
@@ -93,6 +93,9 @@ export default function BarListScreen() {
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     {bar.name}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                    {bar.average_rating}
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                     {bar.category ? bar.category.name : '-'}

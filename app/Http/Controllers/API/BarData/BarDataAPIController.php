@@ -23,10 +23,12 @@ class BarDataAPIController extends Controller
                 $q->where('name', 'LIKE', "%{$search}%");
             });
         }
-        $barDatas = $query->with('category')
-                        ->select('id', 'name', 'cover', 'opening_time', 'category_id')
-                        ->orderBy('created_at', 'desc')
-                        ->paginate(20);
+        $barDatas = $query->with('category', 'reviews.user')
+    ->withAvg(['reviews as average_rating' => fn ($q) => $q], 'rating')
+    ->withCount('reviews')
+    ->orderBy('created_at', 'desc')
+    ->paginate(20);
+
 
         return response()->json($barDatas, 200);
     }
@@ -123,7 +125,9 @@ class BarDataAPIController extends Controller
      */
     public function show(string $id)
     {
-        $bar = BarData::with('menus', 'category', 'images', 'promos')
+        $bar = BarData::with('menus', 'category', 'images', 'promos', 'reviews.user')
+                        ->withAvg(['reviews as average_rating' => fn ($q) => $q], 'rating')
+                        ->withCOunt('reviews')
                         ->findOrFail($id);
 
         $bar->images = collect(json_decode($bar->image))->map(function ($imagePath){

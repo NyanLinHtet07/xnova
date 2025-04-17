@@ -41,7 +41,7 @@ export default function BarPromoIndexScreen(){
 
    
 
-    console.log('active', JSON.stringify(filterActive))
+   
     
 
     return (

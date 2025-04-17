@@ -7,6 +7,7 @@ export interface User {
     permissions: string[];
     phone: string;
     qr: string;
+    profile: string;
 }
 
 export type PageProps<

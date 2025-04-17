@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
         ]);
 
-        $qrImage = QrCode::format('svg')->size(300)->generate($user->email);
+        $qrImage = QrCode::format('svg')->size(300)->generate($user->id);
         $filePath = 'qrcodes/user-' . $user->id . '.svg';
         Storage::disk('public')->put($filePath, $qrImage);
 

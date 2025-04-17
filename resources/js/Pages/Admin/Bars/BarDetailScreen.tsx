@@ -7,7 +7,7 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Dialog, Dialo
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { IconEdit, IconPlus, IconBuildingStore, IconClockHour3, IconInfoOctagon, IconCirclesRelation, IconMapPin, IconPhoneCall } from '@tabler/icons-react';
+import { IconEdit, IconPlus, IconBuildingStore, IconClockHour3, IconInfoOctagon, IconCirclesRelation, IconMapPin, IconPhoneCall, IconStarFilled, IconStar } from '@tabler/icons-react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import { Category } from '@/types/category';
@@ -15,6 +15,7 @@ import BarImagesComponent from '@/Components/Bars/BarImagesComponent';
 import BarAmentiesComponent from '@/Components/Bars/BarAmentiesComponent';
 import BarMenusNewComponent from '@/Components/Bars/BarMenusNewComponent';
 import 'react-quill/dist/quill.snow.css';
+import BarCustomerComponent from '@/Components/Bars/BarCustomerComponent';
 
 
 
@@ -212,7 +213,14 @@ export default function BarDetailScreen() {
                             {bar?.contact}
                             </p>
                         </div>
-                        
+                        <div className='grid grid-cols-8 px-3 py-1 mb-2'>
+                            <p className='col-span-1 '>
+                            <IconStar className='text-gray-600 '/>
+                            </p>
+                            <p className='col-span-7 '>
+                            {bar?.average_rating}
+                            </p>
+                        </div>
                     </div>
                 
                 <TabGroup>
@@ -244,6 +252,12 @@ export default function BarDetailScreen() {
                                                                         
                                                             <span> Go to Promotion Page </span>
                                         </Link>
+
+                                    <Link className='flex items-center justify-center w-56 text-xl font-bold text-white rounded-lg h-44 bg-cyan-600' 
+                                                href={route('admin.bar.review', {id: id})}>
+                                                                        
+                                                            <span> Go to Reviews Page </span>
+                                        </Link>
                                         
                                    </div>
                                    
@@ -269,7 +283,7 @@ export default function BarDetailScreen() {
 
                             <TabPanel   
                                className="p-3 bg-white shadow rounded-xl">
-                                   Hello Desc
+                                  <BarCustomerComponent id={Number(id)}/>
                             </TabPanel>
                       
                     </TabPanels>

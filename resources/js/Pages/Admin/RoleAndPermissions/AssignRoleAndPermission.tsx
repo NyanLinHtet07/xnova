@@ -2,10 +2,11 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import AdminAuthenticatedLayout from '@/Layouts/AdminAuthenticatedLayout';
 import {Head, Link} from '@inertiajs/react';
+import { PermissionType, RoleType } from '@/types/role';
 
 const AssignRoleAndPermission = () => {
-    const [roles, setRoles] = useState([]);
-    const [permissions, setPermissions] = useState([]);
+    const [roles, setRoles] = useState<RoleType[]>([]);
+    const [permissions, setPermissions] = useState<Record<string, PermissionType[]>>({});
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedUser, setSelectedUser] = useState("");
 
@@ -47,7 +48,7 @@ const AssignRoleAndPermission = () => {
                 <div key={group}>
                 <h3>{group}</h3>
                 <ul>
-                    {permissions[group].map(perm => <li key={perm.id}>{perm.name}</li>)}
+                    {permissions[group]?.map(perm => <li key={perm.id}>{perm.name}</li>)}
                 </ul>
                 </div>
             ))}

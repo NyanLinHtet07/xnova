@@ -64,6 +64,30 @@ class UserAPIController extends Controller
         return response()->json($user, 200);
     }
 
+    public function updateUser(Request $request, $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $name = $request->input('name');
+        $profile = $user->profile;
+
+        if($request->hasfile('profile')){
+            $profile = $request->file('profile')->store('user/profile', 'public');
+            $profile = 'storage/' . $profile;
+            
+        }
+
+        $user->update([
+            'name' => $request->input('name') ?? $user->name,
+            'email' => $request->input('email') ?? $user->email,
+            'phone' => $request->input('phone') ?? $user->phone,
+            'profile' => $profile,
+        ]);
+
+        return  response()->json($user, 200);
+    }
+
     public function assignRole(Request $request, $id)
     {
         $request -> validate([
@@ -97,7 +121,7 @@ class UserAPIController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        $qrImage = QrCode::format('svg')->size(300)->generate($user->email);
+        $qrImage = QrCode::format('svg')->size(300)->generate($user->id);
         $filePath = 'qrcodes/user-' . $user->id . '.svg';
         Storage::disk('public')->put($filePath, $qrImage);
         $user->qr = 'storage/' . $filePath;

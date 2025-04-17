@@ -6,6 +6,7 @@ use App\Models\BarMenu;
 use App\Models\Category;
 use App\Models\BarImageGallery;
 use App\Models\BarPromo;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Model;
 
 class BarData extends Model
@@ -58,5 +59,16 @@ class BarData extends Model
     public function promos()
     {
         return $this->hasMany(BarPromo::class, 'bar_id', 'id');
+    }
+
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'bar_id');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return round($this->reviews()->avg('rating'), 1);
     }
     }

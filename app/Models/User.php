@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Review;
 
 class User extends Authenticatable
 {
@@ -24,7 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'qr'
+        'qr',
+        'profile'
     ];
 
     /**
@@ -48,5 +50,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
     }
 }

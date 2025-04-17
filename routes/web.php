@@ -65,6 +65,10 @@ Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Admin/Bars/BarPromoIndexScreen', ['id' => $id]);
     })->name('admin.bar.promo');
 
+    Route::get('/bar/{id}/review', function($id){
+        return Inertia::render('Admin/Bars/BarReviewIndexScreen', ['id' => $id]);
+    })->name('admin.bar.review');
+
     
 });
 
